@@ -1,6 +1,11 @@
+"""
+Render a Schlegel diagram of a 4-D Huppa.
+"""
+
 from pyjamas.ui.RootPanel import RootPanel
 from pyjamas.Canvas2D import Canvas
 from pyjamas.ui.Label import Label
+from pyjamas.ui.TextBox import TextBox
 
 # Pyjamas has no zip()!
 def zip(*lists):
@@ -89,7 +94,10 @@ class LinesCanvas(Canvas):
         self.h = h
 
     def draw(self, lines, transform):
-        # find bounding box
+        self.context.fillStyle = '#FFFFFF' # white
+        self.context.fillRect(-self.w/2, -self.h/2, self.w, self.h)
+        
+        # find bounding square (centered around 0,0)
         xs = []
         ys = []
         for line in lines:
@@ -114,29 +122,54 @@ class LinesCanvas(Canvas):
         
 class Project2D(object):
     """
-    Ad-hoc aphine projection onto XY plane.
-    
-    Treat all coordinates except X and Y as you would treat Z in 3D.
+    Perspective projection onto XY plane.
     """
     
-    def __init__(self, *cameras):
-        self.cameras = cameras
+    def __init__(self, camera):
+        self.camera = camera
         
     def transform(self, point):
-        x = point[0]
-        y = point[1]
-        for z, camera in zip(point[2:], self.cameras):
-            xc, yc, zc = camera
-            try:
-                x += (x - xc) * z / (zc - z)
-                y += (y - yc) * z / (zc - z)
-            except ZeroDivisionError:
-                pass
-        return (x, y)
+        rel_point = []
+        for p, c in zip(point, self.camera):
+            rel_point.append(p - c)
+        x, y, z, w = rel_point
+        xc, yc, zc, wc = self.camera
+        scale = (zc / z) * (wc / w)
+        x *= scale
+        y *= scale
+	return (x + xc, y + yc)
+
+class Main(object):
+    def __init__(self):
+        self.canvas = LinesCanvas(300, 300)
+        RootPanel().add(self.canvas)
+        self.boxes = []
+        for axis, c in zip("xyzw", (0, 0.5, 4, 20)):
+            RootPanel().add(Label("Camera %s:" % axis))
+            box = TextBox()
+            box.setText(c)
+            self.boxes.append(box)
+            RootPanel().add(box)
+            box.addKeyboardListener(self)
+        self.lines = concat(Cuboid([1, 1, 1, 1]).lines, figures())
+        self.draw()
+
+    def draw(self):
+        camera = []
+        for box in self.boxes:
+            camera.append(float(box.getText()))
+        self.projection = Project2D(camera)
+        print camera
+        self.canvas.draw(self.lines, self.projection.transform)
+        
+    def onKeyUp(self, sender, keyCode, modifiers):
+        self.draw()
+
+    def onKeyDown(self, sender, keyCode, modifiers):
+        pass
+    
+    def onKeyPress(self, sender, keyCode, modifiers):
+        pass    
 
 if __name__ == '__main__':
-    canvas = LinesCanvas(300, 300)
-    RootPanel().add(canvas)
-    projection = Project2D((0, 0.5, 4), (0, 0, 20))
-    canvas.draw(concat(concat(Cuboid([1, 1, 1, 1]).lines, figures())),
-                projection.transform)
+    m = Main()
