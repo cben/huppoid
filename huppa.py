@@ -2,10 +2,8 @@
 Render a Schlegel diagram of a 4-D Huppa.
 """
 
-from pyjamas.ui.RootPanel import RootPanel
-from pyjamas.Canvas2D import Canvas
-from pyjamas.ui.Label import Label
-from pyjamas.ui.TextBox import TextBox
+# Compatibility stubs
+# ===================
 
 # Pyjamas has no zip()!
 def zip(*lists):
@@ -21,11 +19,14 @@ def zip(*lists):
 # Pyjamas doesn't support + operator overloading!
 # + on anything other than numbers returns concatenation of their
 # string representations, e.g.: [1]+[2,3]=="[1][2,3]".
-def concat(*tuples):
+def concat(*seqs):
     res = []
-    for t in tuples:
-        res.extend(t)
+    for seq in seqs:
+        res.extend(seq)
     return res
+
+# Geometric model
+# ===============
 
 class Cuboid(object):
     """
@@ -81,44 +82,6 @@ def figures(legsh=0.2, legsv=0.7, torsov=0.6,
                           concat(s1, fixed_axes)))
     return lines
 
-    
-class LinesCanvas(Canvas):
-
-    def __init__(self, w, h):
-        Canvas.__init__(self, w, h)
-
-        # center coordinates on (0,0); scaling will be done on-demand
-        self.context.translate(w/2, h/2)
-        # TODO: can we use context.scale to [-1,1] range?
-        self.w = w
-        self.h = h
-
-    def draw(self, lines, transform):
-        self.context.fillStyle = '#FFFFFF' # white
-        self.context.fillRect(-self.w/2, -self.h/2, self.w, self.h)
-        
-        # find bounding square (centered around 0,0)
-        xs = []
-        ys = []
-        for line in lines:
-            for p in line:
-                x, y = transform(p)
-                xs.append(abs(x))
-                ys.append(abs(y))
-        # scale to leave small margin
-        scale = 0.9 * min(self.w / 2 / max(xs),
-                          self.h / 2 / max(ys))
-        
-        # draw
-        for line in lines:
-            p0, p1 = line
-            x0, y0 = transform(p0)
-            x1, y1 = transform(p1)
-            # use math coords: y should grow upwards
-            self.context.moveTo(x0 * scale, -y0 * scale)
-            self.context.lineTo(x1 * scale, -y1 * scale)
-            self.context.stroke()
-        
         
 class Project2D(object):
     """
@@ -139,18 +102,70 @@ class Project2D(object):
         y *= scale
 	return (x + xc, y + yc)
 
-class Main(object):
+# Canvas interface
+# ================
+
+from pyjamas.ui.RootPanel import RootPanel
+from pyjamas.Canvas2D import Canvas
+from pyjamas.ui.Label import Label
+from pyjamas.ui.TextBox import TextBox
+from pyjamas.ui.VerticalPanel import VerticalPanel
+from pyjamas.ui.Button import Button
+    
+class LinesCanvas(Canvas):
+
+    def __init__(self, w, h):
+        Canvas.__init__(self, w, h)
+
+        # center coordinates on (0,0); scaling will be done on-demand
+        self.context.translate(w/2, h/2)
+        # TODO: can we use context.scale to [-1,1] range?
+        self.w = w
+        self.h = h
+
+    def draw(self, lines, transform):
+        self.context.clearRect(-self.w/2, -self.h/2, self.w, self.h)
+
+        # find bounding square (centered around 0,0)
+        xs = []
+        ys = []
+        for line in lines:
+            for p in line:
+                x, y = transform(p)
+                xs.append(abs(x))
+                ys.append(abs(y))
+        # scale to leave small margin
+        scale = 0.9 * min(self.w / 2 / max(xs),
+                          self.h / 2 / max(ys))
+        
+        # draw
+        self.context.beginPath()
+        for line in lines:
+            p0, p1 = line
+            x0, y0 = transform(p0)
+            x1, y1 = transform(p1)
+            # use math coords: y should grow upwards
+            self.context.moveTo(x0 * scale, -y0 * scale)
+            self.context.lineTo(x1 * scale, -y1 * scale)
+        self.context.stroke()
+        
+
+class Main(VerticalPanel):
     def __init__(self):
+        VerticalPanel.__init__(self)
         self.canvas = LinesCanvas(300, 300)
-        RootPanel().add(self.canvas)
+        self.add(self.canvas)
+        
         self.boxes = []
-        for axis, c in zip("xyzw", (0, 0.5, 4, 20)):
-            RootPanel().add(Label("Camera %s:" % axis))
+        for axis, c in zip("xyzw", (0, 3, 4, 20)):
+            self.add(Label("Camera %s:" % axis))
             box = TextBox()
             box.setText(c)
             self.boxes.append(box)
-            RootPanel().add(box)
+            self.add(box)
             box.addKeyboardListener(self)
+        self.camera = None  # force first redraw
+
         self.lines = concat(Cuboid([1, 1, 1, 1]).lines, figures())
         self.draw()
 
@@ -158,9 +173,10 @@ class Main(object):
         camera = []
         for box in self.boxes:
             camera.append(float(box.getText()))
-        self.projection = Project2D(camera)
-        print camera
-        self.canvas.draw(self.lines, self.projection.transform)
+        if camera != self.camera:
+            self.camera = camera
+            self.projection = Project2D(camera)
+            self.canvas.draw(self.lines, self.projection.transform)
         
     def onKeyUp(self, sender, keyCode, modifiers):
         self.draw()
@@ -172,4 +188,4 @@ class Main(object):
         pass    
 
 if __name__ == '__main__':
-    m = Main()
+    RootPanel().add(Main())
