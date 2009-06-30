@@ -85,22 +85,33 @@ def figures(legsh=0.2, legsv=0.7, torsov=0.6,
         
 class Project2D(object):
     """
-    Perspective projection onto XY plane.
+    Perspective projection onto XYZ space, then onto XY plane.
     """
     
     def __init__(self, camera):
         self.camera = camera
         
     def transform(self, point):
-        rel_point = []
-        for p, c in zip(point, self.camera):
-            rel_point.append(p - c)
-        x, y, z, w = rel_point
         xc, yc, zc, wc = self.camera
-        scale = (zc / z) * (wc / w)
-        x *= scale
-        y *= scale
-	return (x + xc, y + yc)
+        x, y, z, w = point
+        # translate relative to (0, 0, 0, wc) camera
+        w -= wc
+        # project onto XYZ
+        x *= -wc / w
+        y *= -wc / w
+        z *= -wc / w
+        # translate relative to (xc, yc, zc) camera
+        x -= xc
+        y -= yc
+        z -= zc
+        # project onto XY
+        x *= -zc / z
+        y *= -zc / z
+        # translate back to be relative to XY origin
+        x += xc
+        y += yc
+        
+	return (x, y)
 
 # Canvas interface
 # ================
@@ -157,7 +168,7 @@ class Main(VerticalPanel):
         self.add(self.canvas)
         
         self.boxes = []
-        for axis, c in zip("xyzw", (0, 3, 4, 20)):
+        for axis, c in zip("xyzw", (0, 1.5, 5, 15)):
             self.add(Label("Camera %s:" % axis))
             box = TextBox()
             box.setText(c)
@@ -173,6 +184,7 @@ class Main(VerticalPanel):
         camera = []
         for box in self.boxes:
             camera.append(float(box.getText()))
+        # guard against spurious redrawing (e.g. arrows or Tab presses)
         if camera != self.camera:
             self.camera = camera
             self.projection = Project2D(camera)
