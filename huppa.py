@@ -28,6 +28,17 @@ def concat(*seqs):
 # Geometric model
 # ===============
 
+class Line(tuple):
+    pass
+
+def style_lines(lines, lineWidth):
+    res = []
+    for line in lines:
+        line = Line(line)
+        line.lineWidth = lineWidth
+        res.append(line)
+    return res
+
 import math
 
 class Cuboid(object):
@@ -73,9 +84,26 @@ class Huppoid(Cuboid):
         facet0 = Cuboid(sizes, {Y: -y_size})
         facet1 = Cuboid(sizes, {Y: +y_size})
         self.points = concat(facet0.points, facet1.points)
-        self.lines = concat(#facet0.lines,
-                            facet1.lines,
-                            zip(facet0.points, facet1.points))
+        self.lines = concat(style_lines(facet0.lines, 1),
+                            style_lines(facet1.lines, 3),
+                            style_lines(zip(facet0.points, facet1.points), 3))
+
+        # make it pretty
+        for line in facet1.lines:
+            p0, p1 = line
+            wavy = []
+            N = 30
+            for i in range(N + 1):
+                t = i / N
+                # linear interpolation
+                p = []
+                for x0, x1 in zip(p0, p1):
+                    p.append(x0 * (1 - t) + x1 * t)
+                # vertical drop
+                p[Y] = p[Y] - abs(math.sin(t * math.pi * 3)) * 0.1
+                wavy.append(p)
+                
+            self.lines.extend(style_lines(zip(wavy[:-1], wavy[1:]), 1))
 
 def scale(point, factors):
     coords = []
@@ -168,7 +196,6 @@ class LinesCanvas(Canvas):
         self.w = w
         self.h = h
         
-        self.context.lineWidth = 2.5
         self.context.lineCap = "round"
 
     def draw(self, lines, image, transform):
@@ -196,14 +223,15 @@ class LinesCanvas(Canvas):
                                (x1 - x0) * scale, (y1 - y0) * scale)
 
         # draw lines
-        self.context.beginPath()
         for line in lines:
+            self.context.lineWidth = getattr(line, 'lineWidth', 5)
+            self.context.beginPath()
             p0, p1 = line
             x0, y0 = transform(p0)
             x1, y1 = transform(p1)
             self.context.moveTo(x0 * scale, y0 * scale)
             self.context.lineTo(x1 * scale, y1 * scale)
-        self.context.stroke()
+            self.context.stroke()
 
 class Main(VerticalPanel):
     def __init__(self):
@@ -212,7 +240,7 @@ class Main(VerticalPanel):
         self.add(self.canvas)
         
         self.boxes = []
-        for axis, c in zip("xyzw", (0, 1.5, 5, 15)):
+        for axis, c in zip("xyzw", (0, 1.8, 5, 12)):
             self.add(Label("Camera %s:" % axis))
             box = TextBox()
             box.setText(c)
