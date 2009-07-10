@@ -32,19 +32,18 @@ class Cuboid(object):
     """
     N-dimentional cuboid.
     """
-    def __init__(self, sizes, fixed_axes=()):
+    def __init__(self, sizes, isHup, fixed_axes=()):
         if len(sizes) == 0:
             self.points = [fixed_axes]
             self.lines = []
         else:
             # Recursive construction: 2 facets + lines between them.
-            facet0 = Cuboid(sizes[1:], concat(fixed_axes, (-sizes[0],)))
-            facet1 = Cuboid(sizes[1:], concat(fixed_axes, (+sizes[0],)))
-
+            facet0 = Cuboid(sizes[1:], False, concat(fixed_axes, (-sizes[0],)))
+            facet1 = Cuboid(sizes[1:], False, concat(fixed_axes, (+sizes[0],)))
+            botlines = dict([(True,[]),(False,facet1.lines)])
             self.points = concat(facet0.points, facet1.points)
-            self.lines = concat(facet0.lines,
-                                    facet1.lines,
-                                    zip(facet0.points, facet1.points))
+            self.lines = concat(facet0.lines, botlines[isHup], 
+                                zip(facet0.points, facet1.points))
 
 def scale(point, factors):
     coords = []
@@ -116,13 +115,14 @@ class Project2D(object):
 # Canvas interface
 # ================
 
+from pyjamas import Window
 from pyjamas.ui.RootPanel import RootPanel
-from pyjamas.Canvas2D import Canvas
+from pyjamas.Canvas2D import Canvas, CanvasImage
 from pyjamas.ui.Label import Label
 from pyjamas.ui.TextBox import TextBox
 from pyjamas.ui.VerticalPanel import VerticalPanel
 from pyjamas.ui.Button import Button
-    
+
 class LinesCanvas(Canvas):
 
     def __init__(self, w, h):
@@ -130,11 +130,16 @@ class LinesCanvas(Canvas):
 
         # center coordinates on (0,0); scaling will be done on-demand
         self.context.translate(w/2, h/2)
+        # use math coords: y should grow upwards, not downwards
+        self.context.scale(1, -1)
         # TODO: can we use context.scale to [-1,1] range?
         self.w = w
         self.h = h
+        
+        self.context.lineWidth = 3
+        self.context.lineCap = "round"
 
-    def draw(self, lines, transform):
+    def draw(self, lines, image, transform):
         self.context.clearRect(-self.w/2, -self.h/2, self.w, self.h)
 
         # find bounding square (centered around 0,0)
@@ -149,22 +154,29 @@ class LinesCanvas(Canvas):
         scale = 0.9 * min(self.w / 2 / max(xs),
                           self.h / 2 / max(ys))
         
-        # draw
+        # draw lines
         self.context.beginPath()
         for line in lines:
             p0, p1 = line
             x0, y0 = transform(p0)
             x1, y1 = transform(p1)
-            # use math coords: y should grow upwards
-            self.context.moveTo(x0 * scale, -y0 * scale)
-            self.context.lineTo(x1 * scale, -y1 * scale)
+            self.context.moveTo(x0 * scale, y0 * scale)
+            self.context.lineTo(x1 * scale, y1 * scale)
         self.context.stroke()
+
+        # draw image
+        x0, y0, x1, y1, img = image
+        print x0 * scale, y0 * scale, \
+              (x1 - x0) * scale, (y1 - y0) * scale
         
+        self.context.drawImage(img,
+                               x0 * scale, y0 * scale,
+                               (x1 - x0) * scale, (y1 - y0) * scale)
 
 class Main(VerticalPanel):
     def __init__(self):
         VerticalPanel.__init__(self)
-        self.canvas = LinesCanvas(300, 300)
+        self.canvas = LinesCanvas(500, 500)
         self.add(self.canvas)
         
         self.boxes = []
@@ -177,7 +189,10 @@ class Main(VerticalPanel):
             box.addKeyboardListener(self)
         self.camera = None  # force first redraw
 
-        self.lines = concat(Cuboid([1, 1, 1, 1]).lines, figures())
+        """ self.lines = concat(Cuboid([1, 1, 1, 1]).lines, figures())"""
+        self.lines = Cuboid([1,1,1,1],True).lines
+        self.figs = Image()
+        self.figs.src = 'figures.png'
         self.draw()
 
     def draw(self):
@@ -188,7 +203,11 @@ class Main(VerticalPanel):
         if camera != self.camera:
             self.camera = camera
             self.projection = Project2D(camera)
-            self.canvas.draw(self.lines, self.projection.transform)
+            self.canvas.draw(self.lines,
+                             # assume source image is square
+                             (-1, -1, 1, 1, self.figs),
+                             self.projection.transform)
+
         
     def onKeyUp(self, sender, keyCode, modifiers):
         self.draw()
