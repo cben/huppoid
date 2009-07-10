@@ -28,28 +28,60 @@ def concat(*seqs):
 # Geometric model
 # ===============
 
+import math
+
 class Cuboid(object):
     """
     N-dimentional cuboid.
     """
-    def __init__(self, sizes, isHup, fixed_axes=()):
+    def __init__(self, sizes, fixed_axes={}):
+        """
+        `sizes` and `fixed_axes` are dicts.
+        Their keys together should be range(N).
+        """
         if len(sizes) == 0:
-            self.points = [fixed_axes]
+            # A 0-dimentional cuboid = a single point.
             self.lines = []
+            # convert dict to list.
+            point = []
+            for axis in range(len(fixed_axes.keys())):
+                point.append(fixed_axes[axis])
+            self.points = [point]
         else:
             # Recursive construction: 2 facets + lines between them.
-            facet0 = Cuboid(sizes[1:], False, concat(fixed_axes, (-sizes[0],)))
-            facet1 = Cuboid(sizes[1:], False, concat(fixed_axes, (+sizes[0],)))
-            botlines = dict([(True,[]),(False,facet1.lines)])
+            sizes = sizes.copy()
+            axis, size = sizes.popitem()
+            fixed0 = fixed_axes.copy()
+            fixed0[axis] = -size
+            facet0 = Cuboid(sizes, fixed0)
+            fixed1 = fixed_axes.copy()
+            fixed1[axis] = +size
+            facet1 = Cuboid(sizes, fixed1)
             self.points = concat(facet0.points, facet1.points)
-            self.lines = concat(facet0.lines, botlines[isHup], 
+            self.lines = concat(facet0.lines,
+                                facet1.lines,
                                 zip(facet0.points, facet1.points))
+
+class Huppoid(Cuboid):
+    """
+    4-dimentional cuboid with tweaks.
+    """
+    def __init__(self, sizes, Y=1):
+        # Recursive construction: 2 facets + lines between them.
+        sizes = sizes.copy()
+        y_size = sizes.pop(Y)
+        facet0 = Cuboid(sizes, {Y: -y_size})
+        facet1 = Cuboid(sizes, {Y: +y_size})
+        self.points = concat(facet0.points, facet1.points)
+        self.lines = concat(#facet0.lines,
+                            facet1.lines,
+                            zip(facet0.points, facet1.points))
 
 def scale(point, factors):
     coords = []
     for (coord, factor) in zip(point, factors):
         coords.append(coord * factor)
-    return coords    
+    return coords
 
 def figures(legsh=0.2, legsv=0.7, torsov=0.6,
             handh=0.7, handv0=0.2, handv1=0.3,
@@ -136,7 +168,7 @@ class LinesCanvas(Canvas):
         self.w = w
         self.h = h
         
-        self.context.lineWidth = 3
+        self.context.lineWidth = 2.5
         self.context.lineCap = "round"
 
     def draw(self, lines, image, transform):
@@ -154,6 +186,15 @@ class LinesCanvas(Canvas):
         scale = 0.9 * min(self.w / 2 / max(xs),
                           self.h / 2 / max(ys))
         
+        # draw image
+        x0, y0, x1, y1, img = image
+        print x0 * scale, y0 * scale, \
+              (x1 - x0) * scale, (y1 - y0) * scale
+        
+        self.context.drawImage(img,
+                               x0 * scale, y0 * scale,
+                               (x1 - x0) * scale, (y1 - y0) * scale)
+
         # draw lines
         self.context.beginPath()
         for line in lines:
@@ -163,15 +204,6 @@ class LinesCanvas(Canvas):
             self.context.moveTo(x0 * scale, y0 * scale)
             self.context.lineTo(x1 * scale, y1 * scale)
         self.context.stroke()
-
-        # draw image
-        x0, y0, x1, y1, img = image
-        print x0 * scale, y0 * scale, \
-              (x1 - x0) * scale, (y1 - y0) * scale
-        
-        self.context.drawImage(img,
-                               x0 * scale, y0 * scale,
-                               (x1 - x0) * scale, (y1 - y0) * scale)
 
 class Main(VerticalPanel):
     def __init__(self):
@@ -189,8 +221,8 @@ class Main(VerticalPanel):
             box.addKeyboardListener(self)
         self.camera = None  # force first redraw
 
-        """ self.lines = concat(Cuboid([1, 1, 1, 1]).lines, figures())"""
-        self.lines = Cuboid([1,1,1,1],True).lines
+        self.lines = Huppoid({0:1, 1:1, 2:1, 3:1}).lines
+        #self.lines.extend(figures())
         self.figs = Image()
         self.figs.src = 'figures.png'
         self.draw()
@@ -205,7 +237,7 @@ class Main(VerticalPanel):
             self.projection = Project2D(camera)
             self.canvas.draw(self.lines,
                              # assume source image is square
-                             (-1, -1, 1, 1, self.figs),
+                             (-.8, -1, .8, .6, self.figs),
                              self.projection.transform)
 
         
