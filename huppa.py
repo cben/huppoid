@@ -60,38 +60,36 @@ class Cuboid(object):
             self.points = [point]
         else:
             # Recursive construction: 2 facets + lines between them.
-            sizes = sizes.copy()
-            axis, size = sizes.popitem()
+            axis, size = sizes[0]
             fixed0 = fixed_axes.copy()
             fixed0[axis] = -size
-            facet0 = Cuboid(sizes, fixed0)
+            facet0 = Cuboid(sizes[1:], fixed0)
             fixed1 = fixed_axes.copy()
             fixed1[axis] = +size
-            facet1 = Cuboid(sizes, fixed1)
+            facet1 = Cuboid(sizes[1:], fixed1)
             self.points = concat(facet0.points, facet1.points)
-            self.lines = concat(facet0.lines,
-                                facet1.lines,
-                                zip(facet0.points, facet1.points))
+            self.lines = concat(
+                facet0.lines,
+                zip(facet0.points, facet1.points),
+                facet1.lines,
+                )
 
 class Huppoid(Cuboid):
     """
     4-dimentional cuboid with tweaks.
     """
-    def __init__(self, sizes, Y=1):
+    def __init__(self, sizes):
         # Recursive construction: 2 facets + lines between them.
-        sizes = sizes.copy()
-        y_size = sizes.pop(Y)
-        facet0 = Cuboid(sizes, {Y: -y_size})
-        facet1 = Cuboid(sizes, {Y: +y_size})
+        (y_axis, y_size) = sizes[0]
+        facet0 = Cuboid(sizes[1:], {y_axis: -y_size})
+        facet1 = Cuboid(sizes[1:], {y_axis: +y_size})
         self.points = concat(facet0.points, facet1.points)
-        self.lines = concat(style_lines(facet0.lines, 1),
-                            style_lines(facet1.lines, 3),
-                            style_lines(zip(facet0.points, facet1.points), 3))
 
-        # make it pretty
+        top_lines = []
+        # add a pretty wavy fabric
         for line in facet1.lines:
-            p0, p1 = line
             wavy = []
+            p0, p1 = line
             N = 30
             for i in range(N + 1):
                 t = i / N
@@ -100,48 +98,19 @@ class Huppoid(Cuboid):
                 for x0, x1 in zip(p0, p1):
                     p.append(x0 * (1 - t) + x1 * t)
                 # vertical drop
-                p[Y] = p[Y] - abs(math.sin(t * math.pi * 3)) * 0.1
+                p[y_axis] = p[y_axis] - abs(math.sin(t * math.pi * 3)) * 0.1
                 wavy.append(p)
+            # the stright line should obscure the wavy fabric
+            top_lines.extend(style_lines([wavy], 1))
+            top_lines.extend(style_lines([line], 3))
                 
-            self.lines.extend(style_lines(zip(wavy[:-1], wavy[1:]), 1))
+        self.lines = concat(
+            style_lines(facet0.lines, 1),
+            style_lines(zip(facet0.points, facet1.points), 3),
+            top_lines,
+            )
 
-def scale(point, factors):
-    coords = []
-    for (coord, factor) in zip(point, factors):
-        coords.append(coord * factor)
-    return coords
 
-def figures(legsh=0.2, legsv=0.7, torsov=0.6,
-            handh=0.7, handv0=0.2, handv1=0.3,
-            headv=0.2, headh=0.2,
-            size=1, fixed_axes=(0, 0)):
-    """A schematic drawing of us on a 2D canvas"""
-    # groom: x in [-1,0], y in [TODO: 0,1]  (will scale & mirror later...)
-    gx = -handh
-    gleftfoot = (gx - legsh, -1)
-    grightfoot = (gx + legsh, -1)
-    glowtorso = (gx, -1 + legsv)
-    hightorso = glowtorso[1] + torsov
-    ghightorso = (gx, hightorso)
-    ghandlow = (0, hightorso - handv0)
-    ghandhigh = (0, hightorso - handv1)
-    gheadtop = (gx + headh, hightorso + headv)
-    g = [(gleftfoot, glowtorso), (grightfoot, glowtorso),
-         (glowtorso, ghightorso), (ghightorso, gheadtop),
-         (ghightorso, ghandlow), (ghightorso, ghandhigh)]
-
-    # List comprehensions don't work in pyjamas.
-    lines = []
-    for p0, p1 in g:
-        # 2 figures
-        for scaling in [(size, size), (-size, size)]:
-            s0 = scale(p0, scaling)
-            s1 = scale(p1, scaling)
-            lines.append((concat(s0, fixed_axes),
-                          concat(s1, fixed_axes)))
-    return lines
-
-        
 class Project2D(object):
     """
     Perspective projection onto XYZ space, then onto XY plane.
@@ -196,8 +165,6 @@ class LinesCanvas(Canvas):
         self.w = w
         self.h = h
         
-        self.context.lineCap = "round"
-
     def draw(self, lines, image, transform):
         self.context.clearRect(-self.w/2, -self.h/2, self.w, self.h)
 
@@ -224,15 +191,19 @@ class LinesCanvas(Canvas):
 
         # draw lines
         for line in lines:
-            for extra_width, color in [(2, 'white'), (0, 'black')]:
+            for (extra_width, color, cap) in [
+                (3, 'white', 'butt'),
+                (0, 'black', 'round')]:
                 self.context.lineWidth = getattr(line, 'width', 5) + extra_width
                 self.context.strokeStyle = color
+                self.context.lineCap = cap
                 self.context.beginPath()
-                p0, p1 = line
+                p0 = line[0]
                 x0, y0 = transform(p0)
-                x1, y1 = transform(p1)
                 self.context.moveTo(x0 * scale, y0 * scale)
-                self.context.lineTo(x1 * scale, y1 * scale)
+                for p1 in line[1:]:
+                    x1, y1 = transform(p1)
+                    self.context.lineTo(x1 * scale, y1 * scale)
                 self.context.stroke()
 
 class Main(VerticalPanel):
@@ -250,8 +221,9 @@ class Main(VerticalPanel):
             self.add(box)
             box.addKeyboardListener(self)
         self.camera = None  # force first redraw
-
-        self.lines = Huppoid({0:1, 1:1, 2:1, 3:1}).lines
+        # first axis is Y - direction of huppoid
+        # second axis is Z for correct Z-order.
+        self.lines = Huppoid([(1,1), (2,1), (3,1), (0,1)]).lines
         #self.lines.extend(figures())
         self.figs = Image()
         self.figs.src = 'figures.png'
