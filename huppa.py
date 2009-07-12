@@ -31,11 +31,11 @@ def concat(*seqs):
 class Line(tuple):
     pass
 
-def style_lines(lines, lineWidth):
+def style_lines(lines, width):
     res = []
     for line in lines:
         line = Line(line)
-        line.lineWidth = lineWidth
+        line.width = width
         res.append(line)
     return res
 
@@ -224,14 +224,16 @@ class LinesCanvas(Canvas):
 
         # draw lines
         for line in lines:
-            self.context.lineWidth = getattr(line, 'lineWidth', 5)
-            self.context.beginPath()
-            p0, p1 = line
-            x0, y0 = transform(p0)
-            x1, y1 = transform(p1)
-            self.context.moveTo(x0 * scale, y0 * scale)
-            self.context.lineTo(x1 * scale, y1 * scale)
-            self.context.stroke()
+            for extra_width, color in [(2, 'white'), (0, 'black')]:
+                self.context.lineWidth = getattr(line, 'width', 5) + extra_width
+                self.context.strokeStyle = color
+                self.context.beginPath()
+                p0, p1 = line
+                x0, y0 = transform(p0)
+                x1, y1 = transform(p1)
+                self.context.moveTo(x0 * scale, y0 * scale)
+                self.context.lineTo(x1 * scale, y1 * scale)
+                self.context.stroke()
 
 class Main(VerticalPanel):
     def __init__(self):
