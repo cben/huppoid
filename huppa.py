@@ -28,8 +28,10 @@ def concat(*seqs):
 # Geometric model
 # ===============
 
-class Line(tuple):
-    pass
+class Line(list):
+    cap = 'round'
+    color = 'black'
+    width = 10  # highlight mistakes
 
 def style_lines(lines, width):
     res = []
@@ -98,16 +100,16 @@ class Huppoid(Cuboid):
         # bottom cube - make dashed lines
         for line in facet0.lines:
             self.lines.extend(style_lines(self.dash(line), 1))
-        self.lines.extend(style_lines(zip(facet0.points, facet1.points), 3))
+        self.lines.extend(style_lines(zip(facet0.points, facet1.points), 4))
 
         # add a pretty wavy fabric
         for line in facet1.lines:
             wavy = self.wavy(line, y_axis)
             # the stright line should obscure the wavy fabric
-            self.lines.extend(style_lines([line], 3))
-            self.lines.extend(style_lines(wavy, 1))
+            self.lines.extend(style_lines([line], 4))
+            self.lines.extend(style_lines(wavy, 2))
 
-    def dash(self, line, segments=15):
+    def dash(self, line, segments=13):
         dash = []
         p0, p1 = line
         for i in range(segments):
@@ -127,6 +129,9 @@ class Huppoid(Cuboid):
             wavy.append(p)
         return [wavy]
         
+
+class Point(tuple):
+    pass
                 
 class Project2D(object):
     """
@@ -155,8 +160,10 @@ class Project2D(object):
         # translate back to be relative to XY origin
         x += xc
         y += yc
-        
-	return (x, y)
+
+        res = Point((x, y))
+        res.z_order = z
+	return res
 
 # Canvas interface
 # ================
@@ -188,49 +195,66 @@ class LinesCanvas(Canvas):
         
         context.clearRect(-self.w/2, -self.h/2, self.w, self.h)
 
+        # transform, add white lines slightly behind real lines
+        lines2d = []
+        for line in lines:
+            black_line = Line(map(transform, line))
+            black_line.width = line.width
+            black_line.cap = line.cap
+            black_line.color = line.color
+            lines2d.append(black_line)
+            
+            white_line = Line()
+            for black_p in black_line:
+                white_p = Point(black_p)
+                white_p.z_order = black_p.z_order - 0.05
+                white_line.append(white_p)
+            white_line.width = line.width + 5
+            white_line.cap = 'butt'
+            white_line.color = 'white'
+            lines2d.append(white_line)
+
         # find bounding square (centered around 0,0)
         xs = []
         ys = []
-        for line in lines:
-            for p in line:
-                x, y = transform(p)
+        for line in lines2d:
+            for (x, y) in line:
                 xs.append(abs(x))
                 ys.append(abs(y))
         # scale to leave small margin
         scale = 0.9 * min(self.w / 2 / max(xs),
                           self.h / 2 / max(ys))
-        
+
         # draw lines
-        for line in lines:
-            width = getattr(line, 'width', 5)
-            line = map(transform, line)
-            line.width = width
-            for (extra_width, color, cap) in [
-                (3, 'white', 'butt'),
-                (0, 'black', 'round'),
-                ]:
-                context.lineWidth = getattr(line, 'width', 5) + extra_width
-                context.strokeStyle = color
-                context.fillStyle = 'white'
-                context.lineCap = cap
-                context.beginPath()
-                p0 = line[0]
-                context.moveTo(p0[0] * scale, p0[1] * scale)
-                for p1 in line[1:]:
-                    if extra_width > 0:
-                        # YIKES :(
-                        orig0, orig1 = p0, p1
-                        if orig1 == line[1]:  # first
-                            p0 = interpolate(orig0, orig1, 0.1)
-                            context.moveTo(p0[0] * scale, p0[1] * scale)
-                        if orig1 == line[-1]: # last
-                            p1 = interpolate(orig0, orig1, 0.9)
-                    context.lineTo(p1[0] * scale, p1[1] * scale)
-                    p0 = p1
-##                # fill frilly canvas
-##                if len(line) > 2:
-##                    context.fill()
-                context.stroke()
+        def z_order(line):
+            zs = []
+            for p in line:
+                zs.append(p.z_order)
+            return (min(zs), max(zs))
+            
+        lines2d.sort(keyFunc=z_order)  # key= in normal python
+
+        context.lineJoin = 'round'
+        for line in lines2d:
+            context.lineWidth = line.width
+            context.lineCap = line.cap
+            context.strokeStyle = line.color
+
+            context.beginPath()
+            p0 = line[0]
+            context.moveTo(p0[0] * scale, p0[1] * scale)
+            for p1 in line[1:]:
+##                if extra_width > 0:
+##                    # YIKES :(
+##                    orig0, orig1 = p0, p1
+##                    if orig1 == line[1]:  # first
+##                        p0 = interpolate(orig0, orig1, 0.1)
+##                        context.moveTo(p0[0] * scale, p0[1] * scale)
+##                    if orig1 == line[-1]: # last
+##                        p1 = interpolate(orig0, orig1, 0.9)
+                context.lineTo(p1[0] * scale, p1[1] * scale)
+                p0 = p1
+            context.stroke()
 
         # draw points
         context.fillStyle = 'black'
@@ -250,8 +274,8 @@ class LinesCanvas(Canvas):
         context.scale(1, -1)
         try:
             # This fails with a mysterious NS_ERROR_NOT_AVAILABLE error
-            # if the image is not already in cache (?)
-            # At least draw rest instead of dying horribly...
+            # if the image is not already in cache (at least on Firefox).
+            # Attempt to continue instead of dying horribly - doesn't work(?).
             context.drawImage(img,
                               x0 * scale, y0 * scale,
                               (x1 - x0) * scale, (y1 - y0) * scale)
@@ -266,7 +290,7 @@ class Main(VerticalPanel):
         self.add(self.canvas)
         
         self.boxes = []
-        for axis, c in zip("xyzw", (0, 1.8, 5, 20)):
+        for axis, c in zip("xyzw", (0, 1.7, 6, 20)):
             self.add(Label("Camera %s:" % axis))
             box = TextBox()
             box.setText(c)
