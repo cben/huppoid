@@ -95,24 +95,38 @@ class Huppoid(Cuboid):
         self.points = concat(facet0.points, facet1.points)
 
         self.lines = []
-        self.lines.extend(style_lines(facet0.lines, 1))
+        # bottom cube - make dashed lines
+        for line in facet0.lines:
+            self.lines.extend(style_lines(self.dash(line), 1))
         self.lines.extend(style_lines(zip(facet0.points, facet1.points), 3))
 
         # add a pretty wavy fabric
         for line in facet1.lines:
-            wavy = []
-            p0, p1 = line
-            N = 30
-            HEIGHT = 0.1
-            for i in range(N + 1):
-                t = i / N
-                # vertical drop from point along the line
-                p = interpolate(p0, p1, t)
-                p[y_axis] = p[y_axis] - abs(math.sin(t * math.pi * 3)) * HEIGHT
-                wavy.append(p)
+            wavy = self.wavy(line, y_axis)
             # the stright line should obscure the wavy fabric
             self.lines.extend(style_lines([line], 3))
-            self.lines.extend(style_lines([wavy], 1))
+            self.lines.extend(style_lines(wavy, 1))
+
+    def dash(self, line, segments=15):
+        dash = []
+        p0, p1 = line
+        for i in range(segments):
+            if i % 2 == 0:
+                dash.append([interpolate(p0, p1, i / segments),
+                             interpolate(p0, p1, (i + 1) / segments)])
+        return dash
+        
+    def wavy(self, line, y_axis, drop=0.1, periods=3, segments=30):
+        wavy = []
+        p0, p1 = line
+        for i in range(segments + 1):
+            t = i / segments
+            # vertical drop from point along the line
+            p = interpolate(p0, p1, t)
+            p[y_axis] = p[y_axis] - abs(math.sin(t * math.pi * periods)) * drop
+            wavy.append(p)
+        return [wavy]
+        
                 
 class Project2D(object):
     """
@@ -154,22 +168,25 @@ from pyjamas.ui.Label import Label
 from pyjamas.ui.TextBox import TextBox
 from pyjamas.ui.VerticalPanel import VerticalPanel
 from pyjamas.ui.Button import Button
+import math
 
 class LinesCanvas(Canvas):
 
     def __init__(self, w, h):
         Canvas.__init__(self, w, h)
-
-        # center coordinates on (0,0); scaling will be done on-demand
-        self.context.translate(w/2, h/2)
-        # use math coords: y should grow upwards, not downwards
-        self.context.scale(1, -1)
-        # TODO: can we use context.scale to [-1,1] range?
         self.w = w
-        self.h = h
+        self.h = h        
         
-    def draw(self, lines, image, transform):
-        self.context.clearRect(-self.w/2, -self.h/2, self.w, self.h)
+        context = self.context
+        # center coordinates on (0,0); scaling will be done on-demand
+        context.translate(w/2, h/2)
+        # use math coords: y should grow upwards, not downwards
+        context.scale(1, -1)
+
+    def draw(self, transform, lines, points, image):
+        context = self.context
+        
+        context.clearRect(-self.w/2, -self.h/2, self.w, self.h)
 
         # find bounding square (centered around 0,0)
         xs = []
@@ -185,35 +202,43 @@ class LinesCanvas(Canvas):
         
         # draw lines
         for line in lines:
-            width = line.width
+            width = getattr(line, 'width', 5)
             line = map(transform, line)
             line.width = width
             for (extra_width, color, cap) in [
                 (3, 'white', 'butt'),
                 (0, 'black', 'round'),
                 ]:
-                self.context.lineWidth = getattr(line, 'width', 5) + extra_width
-                self.context.strokeStyle = color
-                self.context.fillStyle = 'white'
-                self.context.lineCap = cap
-                self.context.beginPath()
+                context.lineWidth = getattr(line, 'width', 5) + extra_width
+                context.strokeStyle = color
+                context.fillStyle = 'white'
+                context.lineCap = cap
+                context.beginPath()
                 p0 = line[0]
-                self.context.moveTo(p0[0] * scale, p0[1] * scale)
+                context.moveTo(p0[0] * scale, p0[1] * scale)
                 for p1 in line[1:]:
                     if extra_width > 0:
                         # YIKES :(
                         orig0, orig1 = p0, p1
                         if orig1 == line[1]:  # first
                             p0 = interpolate(orig0, orig1, 0.1)
-                            self.context.moveTo(p0[0] * scale, p0[1] * scale)
+                            context.moveTo(p0[0] * scale, p0[1] * scale)
                         if orig1 == line[-1]: # last
                             p1 = interpolate(orig0, orig1, 0.9)
-                    self.context.lineTo(p1[0] * scale, p1[1] * scale)
+                    context.lineTo(p1[0] * scale, p1[1] * scale)
                     p0 = p1
 ##                # fill frilly canvas
 ##                if len(line) > 2:
-##                    self.context.fill()
-                self.context.stroke()
+##                    context.fill()
+                context.stroke()
+
+        # draw points
+        context.fillStyle = 'black'
+        for p in points:
+            x, y = transform(p)
+            context.beginPath()
+            context.arc(x * scale, y * scale, 5, 0, math.pi * 2, False)
+            context.fill()
 
         # draw image
         x0, y0, x1, y1, img = image
@@ -221,12 +246,18 @@ class LinesCanvas(Canvas):
         # Firefox doesn't support negative height.
         # => Work around by temporarily returning to Y-down coords.
         y0, y1 = -y1, -y0
-        self.context.save()
-        self.context.scale(1, -1)
-        self.context.drawImage(img,
-                               x0 * scale, y0 * scale,
-                               (x1 - x0) * scale, (y1 - y0) * scale)
-        self.context.restore()
+        context.save()
+        context.scale(1, -1)
+        try:
+            # This fails with a mysterious NS_ERROR_NOT_AVAILABLE error
+            # if the image is not already in cache (?)
+            # At least draw rest instead of dying horribly...
+            context.drawImage(img,
+                              x0 * scale, y0 * scale,
+                              (x1 - x0) * scale, (y1 - y0) * scale)
+        except Exception, e:
+            print e
+        context.restore()
 
 class Main(VerticalPanel):
     def __init__(self):
@@ -235,7 +266,7 @@ class Main(VerticalPanel):
         self.add(self.canvas)
         
         self.boxes = []
-        for axis, c in zip("xyzw", (0, 1.8, 5, 12)):
+        for axis, c in zip("xyzw", (0, 1.8, 5, 20)):
             self.add(Label("Camera %s:" % axis))
             box = TextBox()
             box.setText(c)
@@ -245,10 +276,10 @@ class Main(VerticalPanel):
         self.camera = None  # force first redraw
         # first axis is Y - direction of huppoid
         # second axis is Z for correct Z-order.
-        self.lines = Huppoid([(1,1), (2,1), (3,1), (0,1)]).lines
-        #self.lines.extend(figures())
-        self.figs = Image()
-        self.figs.src = 'figures.png'
+        self.huppoid = Huppoid([(1,1), (2,1), (3,1), (0,1)])
+        self.figures = Image()
+        self.figures.src = 'figures.png'
+##        print self.figures.isLoaded()
         self.draw()
 
     def draw(self):
@@ -259,10 +290,11 @@ class Main(VerticalPanel):
         if camera != self.camera:
             self.camera = camera
             self.projection = Project2D(camera)
-            self.canvas.draw(self.lines,
+            self.canvas.draw(self.projection.transform,
+                             self.huppoid.lines,
+                             self.huppoid.points,
                              # assume source image is square
-                             (-.8, -1, .8, .6, self.figs),
-                             self.projection.transform)
+                             (-.8, -1, .8, .6, self.figures))
 
         
     def onKeyUp(self, sender, keyCode, modifiers):
