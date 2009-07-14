@@ -41,6 +41,15 @@ def style_lines(lines, width):
 
 import math
 
+def interpolate(p0, p1, ratio):
+    """
+    Linear interpolation - ratio=0 gives p0, 1 gives p1.
+    """
+    p = []
+    for x0, x1 in zip(p0, p1):
+        p.append(x0 * (1 - ratio) + x1 * ratio)
+    return p
+
 class Cuboid(object):
     """
     N-dimentional cuboid.
@@ -85,32 +94,26 @@ class Huppoid(Cuboid):
         facet1 = Cuboid(sizes[1:], {y_axis: +y_size})
         self.points = concat(facet0.points, facet1.points)
 
-        top_lines = []
+        self.lines = []
+        self.lines.extend(style_lines(facet0.lines, 1))
+        self.lines.extend(style_lines(zip(facet0.points, facet1.points), 3))
+
         # add a pretty wavy fabric
         for line in facet1.lines:
             wavy = []
             p0, p1 = line
             N = 30
+            HEIGHT = 0.1
             for i in range(N + 1):
                 t = i / N
-                # linear interpolation
-                p = []
-                for x0, x1 in zip(p0, p1):
-                    p.append(x0 * (1 - t) + x1 * t)
-                # vertical drop
-                p[y_axis] = p[y_axis] - abs(math.sin(t * math.pi * 3)) * 0.1
+                # vertical drop from point along the line
+                p = interpolate(p0, p1, t)
+                p[y_axis] = p[y_axis] - abs(math.sin(t * math.pi * 3)) * HEIGHT
                 wavy.append(p)
             # the stright line should obscure the wavy fabric
-            top_lines.extend(style_lines([wavy], 1))
-            top_lines.extend(style_lines([line], 3))
+            self.lines.extend(style_lines([line], 3))
+            self.lines.extend(style_lines([wavy], 1))
                 
-        self.lines = concat(
-            style_lines(facet0.lines, 1),
-            style_lines(zip(facet0.points, facet1.points), 3),
-            top_lines,
-            )
-
-
 class Project2D(object):
     """
     Perspective projection onto XYZ space, then onto XY plane.
@@ -180,36 +183,55 @@ class LinesCanvas(Canvas):
         scale = 0.9 * min(self.w / 2 / max(xs),
                           self.h / 2 / max(ys))
         
-        # draw image
-        x0, y0, x1, y1, img = image
-        print x0 * scale, y0 * scale, \
-              (x1 - x0) * scale, (y1 - y0) * scale
-        
-        self.context.drawImage(img,
-                               x0 * scale, y0 * scale,
-                               (x1 - x0) * scale, (y1 - y0) * scale)
-
         # draw lines
         for line in lines:
+            width = line.width
+            line = map(transform, line)
+            line.width = width
             for (extra_width, color, cap) in [
                 (3, 'white', 'butt'),
-                (0, 'black', 'round')]:
+                (0, 'black', 'round'),
+                ]:
                 self.context.lineWidth = getattr(line, 'width', 5) + extra_width
                 self.context.strokeStyle = color
+                self.context.fillStyle = 'white'
                 self.context.lineCap = cap
                 self.context.beginPath()
                 p0 = line[0]
-                x0, y0 = transform(p0)
-                self.context.moveTo(x0 * scale, y0 * scale)
+                self.context.moveTo(p0[0] * scale, p0[1] * scale)
                 for p1 in line[1:]:
-                    x1, y1 = transform(p1)
-                    self.context.lineTo(x1 * scale, y1 * scale)
+                    if extra_width > 0:
+                        # YIKES :(
+                        orig0, orig1 = p0, p1
+                        if orig1 == line[1]:  # first
+                            p0 = interpolate(orig0, orig1, 0.1)
+                            self.context.moveTo(p0[0] * scale, p0[1] * scale)
+                        if orig1 == line[-1]: # last
+                            p1 = interpolate(orig0, orig1, 0.9)
+                    self.context.lineTo(p1[0] * scale, p1[1] * scale)
+                    p0 = p1
+##                # fill frilly canvas
+##                if len(line) > 2:
+##                    self.context.fill()
                 self.context.stroke()
+
+        # draw image
+        x0, y0, x1, y1, img = image
+        # In math coords (Y grows up), the image should have negative height.
+        # Firefox doesn't support negative height.
+        # => Work around by temporarily returning to Y-down coords.
+        y0, y1 = -y1, -y0
+        self.context.save()
+        self.context.scale(1, -1)
+        self.context.drawImage(img,
+                               x0 * scale, y0 * scale,
+                               (x1 - x0) * scale, (y1 - y0) * scale)
+        self.context.restore()
 
 class Main(VerticalPanel):
     def __init__(self):
         VerticalPanel.__init__(self)
-        self.canvas = LinesCanvas(500, 500)
+        self.canvas = LinesCanvas(1000, 1000)
         self.add(self.canvas)
         
         self.boxes = []
