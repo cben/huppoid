@@ -31,6 +31,7 @@ def concat(*seqs):
 class Line(list):
     cap = 'round'
     color = 'black'
+    mode = 'source-over'
     width = 10  # highlight mistakes
 
 def style_lines(lines, width):
@@ -202,6 +203,7 @@ class LinesCanvas(Canvas):
             black_line.width = line.width
             black_line.cap = line.cap
             black_line.color = line.color
+            black_line.mode = line.mode
             lines2d.append(black_line)
             
             white_line = Line()
@@ -212,6 +214,7 @@ class LinesCanvas(Canvas):
             white_line.width = line.width + 5
             white_line.cap = 'butt'
             white_line.color = 'white'
+            white_line.mode = 'destination-out'
             lines2d.append(white_line)
 
         # find bounding square (centered around 0,0)
@@ -239,6 +242,7 @@ class LinesCanvas(Canvas):
             context.lineWidth = line.width
             context.lineCap = line.cap
             context.strokeStyle = line.color
+            context.globalCompositeOperation = line.mode
 
             context.beginPath()
             p0 = line[0]
