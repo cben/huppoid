@@ -100,17 +100,17 @@ class Huppoid(Cuboid):
         self.lines = []
         # bottom cube - make dashed lines
         for line in facet0.lines:
-            self.lines.extend(style_lines(self.dash(line), 1))
+            self.lines.extend(style_lines(self.dash(line), 2))
         self.lines.extend(style_lines(zip(facet0.points, facet1.points), 4))
 
         # add a pretty wavy fabric
         for line in facet1.lines:
             wavy = self.wavy(line, y_axis)
             # the stright line should obscure the wavy fabric
-            self.lines.extend(style_lines([line], 4))
-            self.lines.extend(style_lines(wavy, 2))
+            self.lines.extend(style_lines([line], 5))
+            self.lines.extend(style_lines(wavy, 3))
 
-    def dash(self, line, segments=13):
+    def dash(self, line, segments=9):
         dash = []
         p0, p1 = line
         for i in range(segments):
