@@ -2,6 +2,8 @@
 Render a Schlegel diagram of a 4-D Huppa.
 """
 
+import pyjd  # noop in pyjs
+
 # Compatibility stubs
 # ===================
 
@@ -118,7 +120,7 @@ class Huppoid(Cuboid):
                 dash.append([interpolate(p0, p1, i / segments),
                              interpolate(p0, p1, (i + 1) / segments)])
         return dash
-        
+
     def wavy(self, line, y_axis, drop=0.1, periods=3, segments=30):
         wavy = []
         p0, p1 = line
@@ -129,19 +131,19 @@ class Huppoid(Cuboid):
             p[y_axis] = p[y_axis] - abs(math.sin(t * math.pi * periods)) * drop
             wavy.append(p)
         return [wavy]
-        
+
 
 class Point(tuple):
     pass
-                
+
 class Project2D(object):
     """
     Perspective projection onto XYZ space, then onto XY plane.
     """
-    
+
     def __init__(self, camera):
         self.camera = camera
-        
+
     def transform(self, point):
         xc, yc, zc, wc = self.camera
         x, y, z, w = point
@@ -164,7 +166,7 @@ class Project2D(object):
 
         res = Point((x, y))
         res.z_order = z
-	return res
+        return res
 
 # Canvas interface
 # ================
@@ -183,8 +185,8 @@ class LinesCanvas(Canvas):
     def __init__(self, w, h):
         Canvas.__init__(self, w, h)
         self.w = w
-        self.h = h        
-        
+        self.h = h
+
         context = self.context
         # center coordinates on (0,0); scaling will be done on-demand
         context.translate(w/2, h/2)
@@ -193,7 +195,7 @@ class LinesCanvas(Canvas):
 
     def draw(self, transform, lines, points, image):
         context = self.context
-        
+
         context.clearRect(-self.w/2, -self.h/2, self.w, self.h)
 
         # transform, add white lines slightly behind real lines
@@ -205,7 +207,7 @@ class LinesCanvas(Canvas):
             black_line.color = line.color
             black_line.mode = line.mode
             lines2d.append(black_line)
-            
+
             white_line = Line()
             for black_p in black_line:
                 white_p = Point(black_p)
@@ -234,7 +236,7 @@ class LinesCanvas(Canvas):
             for p in line:
                 zs.append(p.z_order)
             return (min(zs), max(zs))
-            
+
         lines2d.sort(keyFunc=z_order)  # key= in normal python
 
         context.lineJoin = 'round'
@@ -280,9 +282,11 @@ class LinesCanvas(Canvas):
             # This fails with a mysterious NS_ERROR_NOT_AVAILABLE error
             # if the image is not already in cache (at least on Firefox).
             # Attempt to continue instead of dying horribly - doesn't work(?).
-            context.drawImage(img,
-                              x0 * scale, y0 * scale,
-                              (x1 - x0) * scale, (y1 - y0) * scale)
+            print img.isLoaded()
+            if img.isLoaded():
+                context.drawImage(img.getElement(),
+                                  x0 * scale, y0 * scale,
+                                  (x1 - x0) * scale, (y1 - y0) * scale)
         except Exception, e:
             print e
         context.restore()
@@ -290,9 +294,9 @@ class LinesCanvas(Canvas):
 class Main(VerticalPanel):
     def __init__(self):
         VerticalPanel.__init__(self)
-        self.canvas = LinesCanvas(1000, 1000)
+        self.canvas = LinesCanvas(500, 500)
         self.add(self.canvas)
-        
+
         self.boxes = []
         for axis, c in zip("xyzw", (0, 1.7, 6, 20)):
             self.add(Label("Camera %s:" % axis))
@@ -305,10 +309,9 @@ class Main(VerticalPanel):
         # first axis is Y - direction of huppoid
         # second axis is Z for correct Z-order.
         self.huppoid = Huppoid([(1,1), (2,1), (3,1), (0,1)])
-        self.figures = Image()
-        self.figures.src = 'figures.png'
-##        print self.figures.isLoaded()
-        self.draw()
+        self.figures = CanvasImage('figures.png')
+        self.figures.addLoadListener(DrawOnLoad(self))
+##        self.draw()
 
     def draw(self):
         camera = []
@@ -324,15 +327,26 @@ class Main(VerticalPanel):
                              # assume source image is square
                              (-.8, -1, .8, .6, self.figures))
 
-        
+
     def onKeyUp(self, sender, keyCode, modifiers):
         self.draw()
 
     def onKeyDown(self, sender, keyCode, modifiers):
         pass
-    
+
     def onKeyPress(self, sender, keyCode, modifiers):
-        pass    
+        pass
+
+class DrawOnLoad(object):
+    def __init__(self, obj):
+        self.obj = obj
+
+    def onLoad(self, x):
+        self.obj.draw()
 
 if __name__ == '__main__':
+    pyjd.setup("./output/huppa.html")
+
     RootPanel().add(Main())
+
+    pyjd.run()
