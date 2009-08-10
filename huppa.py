@@ -9,23 +9,14 @@ import pyjd  # noop in pyjs
 
 # Pyjamas has no zip()!
 def zip(*lists):
-    # Pyjamas seems to fail on list comprehensions.  Sigh :(
-    res = []
-    for i in range(len(lists[0])):
-        t = []
-        for l in lists:
-            t.append(l[i])
-        res.append(tuple(t))
-    return res
+    return [tuple([l[i] for l in lists])
+            for i in range(len(lists[0]))]
 
 # Pyjamas doesn't support + operator overloading!
 # + on anything other than numbers returns concatenation of their
 # string representations, e.g.: [1]+[2,3]=="[1][2,3]".
 def concat(*seqs):
-    res = []
-    for seq in seqs:
-        res.extend(seq)
-    return res
+    return [item for seq in seqs for item in seq]
 
 # Geometric model
 # ===============
@@ -37,12 +28,10 @@ class Line(list):
     width = 10  # highlight mistakes
 
 def style_lines(lines, width):
-    res = []
+    lines = map(Line, lines)
     for line in lines:
-        line = Line(line)
         line.width = width
-        res.append(line)
-    return res
+    return lines
 
 import math
 
@@ -50,10 +39,8 @@ def interpolate(p0, p1, ratio):
     """
     Linear interpolation - ratio=0 gives p0, 1 gives p1.
     """
-    p = []
-    for x0, x1 in zip(p0, p1):
-        p.append(x0 * (1 - ratio) + x1 * ratio)
-    return p
+    return [x0 * (1 - ratio) + x1 * ratio
+            for x0, x1 in zip(p0, p1)]
 
 class Cuboid(object):
     """
@@ -68,9 +55,8 @@ class Cuboid(object):
             # A 0-dimentional cuboid = a single point.
             self.lines = []
             # convert dict to list.
-            point = []
-            for axis in range(len(fixed_axes.keys())):
-                point.append(fixed_axes[axis])
+            point = [fixed_axes[axis]
+                     for axis in range(len(fixed_axes.keys()))]
             self.points = [point]
         else:
             # Recursive construction: 2 facets + lines between them.
@@ -113,13 +99,11 @@ class Huppoid(Cuboid):
             self.lines.extend(style_lines(wavy, 3))
 
     def dash(self, line, segments=9):
-        dash = []
         p0, p1 = line
-        for i in range(segments):
-            if i % 2 == 0:
-                dash.append([interpolate(p0, p1, i / segments),
-                             interpolate(p0, p1, (i + 1) / segments)])
-        return dash
+        return [[interpolate(p0, p1, i / segments),
+                 interpolate(p0, p1, (i + 1) / segments)]
+                for i in range(segments)
+                if i % 2 == 0]
 
     def wavy(self, line, y_axis, drop=0.1, periods=3, segments=30):
         wavy = []
@@ -220,21 +204,19 @@ class LinesCanvas(Canvas):
             lines2d.append(white_line)
 
         # find bounding square (centered around 0,0)
-        xs = []
-        ys = []
-        for line in lines2d:
-            for (x, y) in line:
-                xs.append(abs(x))
-                ys.append(abs(y))
+        xs = [abs(x)
+              for line in lines2d
+              for (x, y) in line]
+        ys = [abs(y)
+              for line in lines2d
+              for (x, y) in line]
         # scale to leave small margin
         scale = 0.9 * min(self.w / 2 / max(xs),
                           self.h / 2 / max(ys))
 
         # draw lines
         def z_order(line):
-            zs = []
-            for p in line:
-                zs.append(p.z_order)
+            zs = [p.z_order for p in line]
             return (min(zs), max(zs))
 
         lines2d.sort(keyFunc=z_order)  # key= in normal python
@@ -314,9 +296,8 @@ class Main(VerticalPanel):
 ##        self.draw()
 
     def draw(self):
-        camera = []
-        for box in self.boxes:
-            camera.append(float(box.getText()))
+        camera = [float(box.getText())
+                  for box in self.boxes]
         # guard against spurious redrawing (e.g. arrows or Tab presses)
         if camera != self.camera:
             self.camera = camera
