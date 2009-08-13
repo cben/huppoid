@@ -264,7 +264,6 @@ class LinesCanvas(Canvas):
             # This fails with a mysterious NS_ERROR_NOT_AVAILABLE error
             # if the image is not already in cache (at least on Firefox).
             # Attempt to continue instead of dying horribly - doesn't work(?).
-            print img.isLoaded()
             if img.isLoaded():
                 context.drawImage(img.getElement(),
                                   x0 * scale, y0 * scale,

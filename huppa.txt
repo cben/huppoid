@@ -2,6 +2,14 @@
 Anat & Beni — 2009-09-03
 ========================
 
+.. raw:: html
+
+    <!-- ClickTale Top part -->
+    <script type="text/javascript">
+    var WRInitTime=(new Date()).getTime();
+    </script>
+    <!-- ClickTale end of Top part -->
+
 .. image:: hazmana.jpg
     :align: center
     :width: 100%
@@ -10,58 +18,142 @@ Anat & Beni — 2009-09-03
     :align: center
     :width: 100%
 
-Transport
----------
+.. list-table::
+    :class: borderless
+    :header-rows: 1
 
- * We'll probably organize be a mini-bus from Tzur-Shalom.  **Tell us** if you need it, so we can prepare.
+    *
+      - Как попасть в зал — с севера
+      - הגעה לאולם — מהצפון
 
-From north
-..........
+    *
+      - Позвоните нам если вам нужна помощь с транспортом.
+      - תתקשרו אלינו אם אתם זקוקים לעזרה עם תחבורה.
 
-Car: `Check-Post → Chernihovsky → Oranim Parking`_ (not shortest, but simplest)
+    *
+      - :Машиной:
+             `Чек-Пост → Черниховский 35 → Парковка "Ораним"`_
+             (самый простой маршрут).
+      - :ברכב:
+             `צ'ק־פוסט → טשרניחובסקי 35 → חניית "אורנים"`_
+             (לא המסלול הכי קצר, אבל הכי פשוט).
 
-Bus from Lev Hamifratz: 115_ every 15 minutes, get off at `Chernihovsky 22`_.
+    *
+      - :Автобусом:
+              Из Лев-ХаМифрац: 115_ каждые 15 минут, выйти на станции `Черниховский 22`_.
 
-Back from Chernihovsky Shufersal to Lev Hamifraz: bus 115 every 30 minutes, `last at ~23:00`_.
+              Назад от `Черниховский Шуферсаль`_ в Лев-ХаМифрац: 115 каждые 30 минут, `последний в ~23:00`_.
 
-From South
-..........
+      - :באוטובוס:
+              מלב המפרץ: 115_ כל 15 דקות, לצאת בתחנה `טשרניחובסקי 22`_.
 
-Car: `Hof Hakarmel → Chernihovsky → Oranim Parking`_
+              חזרה מ\ `טשרניחובסקי שופרסל`_ ללב המפרץ: 115 כל 30 דקות, `אחרון ב~23:00`_.
 
-Bus from Hof Hakarmel: 115_, every 15 minutes, get off at `Chernihovsky Shufersal`_.
+.. list-table::
+    :class: borderless
+    :header-rows: 1
 
-Back from Chernihovsky 22 to Hof Hakarmel: bus 115 every 30 minutes, `last at ~23:10`_.
+    *
+      - Как попасть в зал — с юга
+      - הגעה לאולם — מהדרום
 
-.. _Hof Hakarmel → Chernihovsky → Oranim Parking: http://maps.google.com/maps?f=d&source=s_d&saddr=%D7%97%D7%99%D7%A4%D7%94,+%D7%9E%D7%97%D7%9C%D7%A3+%D7%97%D7%99%D7%A4%D7%94+%D7%93%D7%A8%D7%95%D7%9D&daddr=%D7%94%D7%A8%D7%91+%D7%A4%D7%A8%D7%A5+%D7%97%D7%99%D7%95%D7%AA,+%D7%97%D7%99%D7%A4%D7%94,+%D7%99%D7%A9%D7%A8%D7%90%D7%9C+to:%D7%9B%D7%91%D7%99%D7%A9+%D7%9C%D7%90+%D7%99%D7%93%D7%95%D7%A2&geocode=%3B%3BFTbO9AEd_KUVAg&hl=iw&mra=ls&sll=32.820343,34.972765&sspn=0.004932,0.008883&ie=UTF8&ll=32.817034,34.969826&spn=0.019728,0.035534&z=15
-.. _Check-Post → Chernihovsky → Oranim Parking: http://maps.google.com/maps?f=d&source=s_d&saddr=%D7%93%D7%A8%D7%9A+%D7%97%D7%98%D7%99%D7%91%D7%AA+%D7%92%D7%95%D7%9C%D7%A0%D7%99&daddr=%D7%93%D7%A8%D7%9A+%D7%94%D7%A2%D7%A6%D7%9E%D7%90%D7%95%D7%AA+to:%D7%A9%D7%93%D7%A8%D7%95%D7%AA+%D7%91%D7%9F+%D7%92%D7%95%D7%A8%D7%99%D7%95%D7%9F+to:%D7%97%D7%99%D7%A4%D7%94,+%D7%94%D7%A8%D7%91+%D7%A4%D7%A8%D7%A5+%D7%97%D7%99%D7%95%D7%AA+to:%D7%9B%D7%91%D7%99%D7%A9+%D7%9C%D7%90+%D7%99%D7%93%D7%95%D7%A2&geocode=FSKl9AEd_CUWAg%3BFb3T9AEdKPwVAg%3BFYTL9AEd4OkVAg%3B%3BFTbO9AEd_KUVAg&hl=iw&mra=mr&mrcr=0&via=1,2&sll=32.822047,34.988194&sspn=0.039454,0.071068&ie=UTF8&ll=32.82028,34.984803&spn=0.019728,0.035534&z=15
+    *
+      - :Машиной:
+             `Хоф Хакармель → Черниховский 35 → Парковка "Ораним"`_
+             (самый простой маршрут).
+      - :ברכב:
+             `חוף הכרמל → טשרניחובסקי 35 → חניית "אורנים"`_
+             (לא המסלול הכי קצר, אבל הכי פשוט).
+
+    *
+      - :Автобусом:
+              Из Лев-ХаМифрац: 115_ каждые 15 минут, выйти на станции `Черниховский Шуферсаль`_.
+
+              Назад от `Черниховский 22`_ в Лев-ХаМифрац: 115 каждые 30 минут, `последний в ~23:00`_.
+
+      - :באוטובוס:
+              מלב המפרץ: 115_ כל 15 דקות, לצאת בתחנה `טשרניחובסקי שופרסל`_.
+
+              חזרה מ\ `טשרניחובסקי 22`_ ללב המפרץ: 115 כל 30 דקות, `אחרון ב~23:00`_.
+
+.. _Чек-Пост → Черниховский 35 → Парковка "Ораним":
+.. _צ'ק־פוסט → טשרניחובסקי 35 → חניית "אורנים": http://maps.google.com/maps?f=d&source=s_d&saddr=%D7%93%D7%A8%D7%9A+%D7%97%D7%98%D7%99%D7%91%D7%AA+%D7%92%D7%95%D7%9C%D7%A0%D7%99&daddr=%D7%93%D7%A8%D7%9A+%D7%94%D7%A2%D7%A6%D7%9E%D7%90%D7%95%D7%AA+to:%D7%A9%D7%93%D7%A8%D7%95%D7%AA+%D7%91%D7%9F+%D7%92%D7%95%D7%A8%D7%99%D7%95%D7%9F+to:%D7%97%D7%99%D7%A4%D7%94,+%D7%94%D7%A8%D7%91+%D7%A4%D7%A8%D7%A5+%D7%97%D7%99%D7%95%D7%AA+to:%D7%9B%D7%91%D7%99%D7%A9+%D7%9C%D7%90+%D7%99%D7%93%D7%95%D7%A2&geocode=FSKl9AEd_CUWAg%3BFb3T9AEdKPwVAg%3BFYTL9AEd4OkVAg%3B%3BFTbO9AEd_KUVAg&hl=iw&mra=mr&mrcr=0&via=1,2&sll=32.822047,34.988194&sspn=0.039454,0.071068&ie=UTF8&ll=32.82028,34.984803&spn=0.019728,0.035534&z=15
+
+.. _Хоф Хакармель → Черниховский 35 → Парковка "Ораним":
+.. _חוף הכרמל → טשרניחובסקי 35 → חניית "אורנים": http://maps.google.com/maps?f=d&source=s_d&saddr=%D7%97%D7%99%D7%A4%D7%94,+%D7%9E%D7%97%D7%9C%D7%A3+%D7%97%D7%99%D7%A4%D7%94+%D7%93%D7%A8%D7%95%D7%9D&daddr=%D7%94%D7%A8%D7%91+%D7%A4%D7%A8%D7%A5+%D7%97%D7%99%D7%95%D7%AA,+%D7%97%D7%99%D7%A4%D7%94,+%D7%99%D7%A9%D7%A8%D7%90%D7%9C+to:%D7%9B%D7%91%D7%99%D7%A9+%D7%9C%D7%90+%D7%99%D7%93%D7%95%D7%A2&geocode=%3B%3BFTbO9AEd_KUVAg&hl=iw&mra=ls&sll=32.820343,34.972765&sspn=0.004932,0.008883&ie=UTF8&ll=32.817034,34.969826&spn=0.019728,0.035534&z=15
 
 .. _115: http://www.otobusim.co.il/otobusim/front2007/LineTravels.asp?CompanyID=1&LineCode=20115&TravelDate=40034&Design=2007&LanguageID=10
-.. _Chernihovsky Shufersal: http://maps.google.com/maps?f=d&source=s_d&saddr=%D7%97%D7%99%D7%A4%D7%94,+%D7%98%D7%A9%D7%A8%D7%A0%D7%99%D7%97%D7%95%D7%91%D7%A1%D7%A7%D7%99+35&daddr=%D7%9B%D7%91%D7%99%D7%A9+%D7%9C%D7%90+%D7%99%D7%93%D7%95%D7%A2&geocode=%3BFTbO9AEd_KUVAg&hl=iw&mra=ls&dirflg=w&sll=32.820634,34.973876&sspn=0.001233,0.002221&ie=UTF8&ll=32.820794,34.973849&spn=0.004932,0.008883&t=h&z=17
-.. _Chernihovsky 22: http://maps.google.com/maps?f=d&source=s_d&saddr=%D7%97%D7%99%D7%A4%D7%94,+%D7%98%D7%A9%D7%A8%D7%A0%D7%99%D7%97%D7%95%D7%91%D7%A1%D7%A7%D7%99+22&daddr=%D7%9B%D7%91%D7%99%D7%A9+%D7%9C%D7%90+%D7%99%D7%93%D7%95%D7%A2&hl=iw&geocode=%3BFTbO9AEd_KUVAg&mra=ls&dirflg=w&sll=32.819649,34.973495&sspn=0.004932,0.008883&ie=UTF8&ll=32.820525,34.973995&spn=0.004932,0.008883&t=h&z=17
-.. _last at ~23:00: http://www.otobusim.co.il/otobusim/front2007/LinePlaces.asp?LineCode=20115&Design=2007&LanguageID=10&CompanyID=1&LineAlternateCode=-842354071&LineDirection=1&DepTime=22:40:00
-.. _last at ~23:10: http://www.otobusim.co.il/otobusim/front2007/LinePlaces.asp?LineCode=20115&Design=2007&LanguageID=10&CompanyID=1&LineAlternateCode=-842354071&LineDirection=2&DepTime=22:50:00
+
+.. _Черниховский Шуферсаль:
+.. _טשרניחובסקי שופרסל: http://maps.google.com/maps?f=d&source=s_d&saddr=%D7%97%D7%99%D7%A4%D7%94,+%D7%98%D7%A9%D7%A8%D7%A0%D7%99%D7%97%D7%95%D7%91%D7%A1%D7%A7%D7%99+35&daddr=%D7%9B%D7%91%D7%99%D7%A9+%D7%9C%D7%90+%D7%99%D7%93%D7%95%D7%A2&geocode=%3BFTbO9AEd_KUVAg&hl=iw&mra=ls&dirflg=w&sll=32.820634,34.973876&sspn=0.001233,0.002221&ie=UTF8&ll=32.820794,34.973849&spn=0.004932,0.008883&t=h&z=17
+
+.. _Черниховский 22:
+.. _טשרניחובסקי 22: http://maps.google.com/maps?f=d&source=s_d&saddr=%D7%97%D7%99%D7%A4%D7%94,+%D7%98%D7%A9%D7%A8%D7%A0%D7%99%D7%97%D7%95%D7%91%D7%A1%D7%A7%D7%99+22&daddr=%D7%9B%D7%91%D7%99%D7%A9+%D7%9C%D7%90+%D7%99%D7%93%D7%95%D7%A2&hl=iw&geocode=%3BFTbO9AEd_KUVAg&mra=ls&dirflg=w&sll=32.819649,34.973495&sspn=0.004932,0.008883&ie=UTF8&ll=32.820525,34.973995&spn=0.004932,0.008883&t=h&z=17
+
+.. _последний в ~23:00:
+.. _אחרון ב~23:00: http://www.otobusim.co.il/otobusim/front2007/LinePlaces.asp?LineCode=20115&Design=2007&LanguageID=10&CompanyID=1&LineAlternateCode=-842354071&LineDirection=1&DepTime=22:40:00
+
+.. _последний в ~23:10:
+.. _אחרון ב~23:10: http://www.otobusim.co.il/otobusim/front2007/LinePlaces.asp?LineCode=20115&Design=2007&LanguageID=10&CompanyID=1&LineAlternateCode=-842354071&LineDirection=2&DepTime=22:50:00
 
 .. http://www.oranim-carmel.co.il/
 
-4D ‘‘Huppoid’’
---------------
 
-A huppa_ stretched in the 4th dimension; like a cuboid_, with frills on top :-).
-Source will be posted soon.
+.. list-table::
+    :class: borderless
+    :header-rows: 1
 
-Figures shamelessly stolen from `XKCD 489`_, formal attire from `XKCD 422`_.
-Hint: XKCD scales up really well by `tracing with Inkscape`_.
+    *
+      - 4-мерный ‘‘Хупоид’’
+      - ’’חופויד‘‘ 4־מימדי
 
-.. _huppa: http://he.wikipedia.org/wiki/%D7%97%D7%95%D7%A4%D7%94
-.. _cuboid: http://en.wikipedia.org/wiki/Tesseract
+    *
+      - Что это за странная геометрическая штука на приглашении?
+
+      - מה זה המבנה הגאומטרי המוזר בהזמנה?
+
+    *
+      - Мы ее прозвали Хупоид — Хупа_ растянутая в 4-ом измерении, или 4-мерный Кубоид_ с схематичным основанием и украшенным верхом.
+        (Да, мы странные ;-)
+        
+      - אנחנו מכנים אותה חופויד — חופה_ שנמתחה במחימד ה־4, או קובויד_ עם בסיס סכמטי וגג מעוטר.
+        (כן, אנחנו מוזרים ;-)
+
+    *
+      - Можете ее покрутить с разных углов:
+
+      - אתם יכולים לסובב אותה מזוויות שונות:
+
+.. _חופה: http://he.wikipedia.org/wiki/%D7%97%D7%95%D7%A4%D7%94
+.. _Хупа: http://en.wikipedia.org/wiki/Huppa
+.. _קובויד: http://he.wikipedia.org/wiki/%D7%AA%D7%99%D7%91%D7%94_(%D7%92%D7%90%D7%95%D7%9E%D7%98%D7%A8%D7%99%D7%94)
+.. _кубоид: http://ru.wikipedia.org/wiki/%D0%93%D0%B8%D0%BF%D0%B5%D1%80%D0%BA%D1%83%D0%B1
+
+.. raw:: html
+
+    <!--[if IE]><h2>This doesn't (yet) work with IE, try Firefox / Chrome</h2><![endif]-->
+    <!--[if IE]><script src="excanvas.js" type="text/javascript"></script><![endif]-->
+    <script language="javascript" src="bootstrap.js">
+    </script>
+
+.. meta::
+    :pygwt\:module: huppa
+
+    
+.. [Source will be posted soon.
+   Figures shamelessly stolen from `XKCD 489`_, formal attire from `XKCD 422`_.
+   Hint: XKCD scales up really well by `tracing with Inkscape`_.]
+
 .. _XKCD 489: http://xkcd/489
 .. _XKCD 422: http://xkcd/422
 .. _tracing with Inkscape: http://www.inkscape.org/doc/tracing/tutorial-tracing.html
 
 .. raw:: html
 
-    <!--[if IE]><h2>This doesn't (yet) work with IE, try Firefox / Chrome</h2><![endif]-->
-    <meta name="pygwt:module" content="huppa">
-    <!--[if IE]><script src="excanvas.js" type="text/javascript"></script><![endif]-->
-    <script language="javascript" src="bootstrap.js"></script>
+    <!-- ClickTale Bottom part -->
+    <div id="ClickTaleDiv" style="display: none;"></div>
+    <script src="http://s.clicktale.net/WRb.js" type="text/javascript"></script>
+    <script type="text/javascript">
+    if(typeof ClickTale=='function') ClickTale(6464,1,"www02");
+    </script>
+    <!-- ClickTale end of Bottom part -->
