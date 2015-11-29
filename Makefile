@@ -13,7 +13,7 @@ ${RST2HTML}:
 	@false
 
 hibidi.py:
-	curl -O http://cben-hacks.sf.net/bidi/hibidi.py
+	curl -O -L http://cben-hacks.sf.net/bidi/hibidi.py
 
 # Config
 # ======

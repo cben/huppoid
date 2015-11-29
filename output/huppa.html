@@ -1,0 +1,469 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html
+  PUBLIC '-//W3C//DTD XHTML 1.0 Transitional//EN'
+  'http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd'>
+<html lang="en" xml:lang="en" xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta content="text/html; charset=utf-8" http-equiv="Content-Type"/>
+<meta content="Docutils 0.6: http://docutils.sourceforge.net/" name="generator"/>
+<title>Anat &amp; Beni — 2009-09-03</title>
+<meta content="huppa" name="pygwt:module"/>
+<style type="text/css">
+
+/*
+:Author: David Goodger (goodger@python.org)
+:Id: $Id: html4css1.css 5196 2007-06-03 20:25:28Z wiemann $
+:Copyright: This stylesheet has been placed in the public domain.
+
+Default cascading style sheet for the HTML output of Docutils.
+
+See http://docutils.sf.net/docs/howto/html-stylesheets.html for how to
+customize this style sheet.
+*/
+
+/* used to remove borders from tables and images */
+.borderless, table.borderless td, table.borderless th {
+  border: 0 }
+
+table.borderless td, table.borderless th {
+  /* Override padding for &quot;table.docutils td&quot; with &quot;! important&quot;.
+     The right padding separates the table cells. */
+  padding: 0 0.5em 0 0 ! important }
+
+th.head {
+  font-size: 150% }
+
+th.stud {
+  text-align: left;
+  font-weight: normal }
+/*
+th, td {
+  direction: rtl }
+
+th.stub, td.stub {
+  direction: ltr ! important }
+*/
+.first {
+  /* Override more specific margin styles with &quot;! important&quot;. */
+  margin-top: 0 ! important }
+
+.last, .with-subtitle {
+  margin-bottom: 0 ! important }
+
+.hidden {
+  display: none }
+
+a.toc-backref {
+  text-decoration: none ;
+  color: black }
+
+blockquote.epigraph {
+  margin: 2em 5em ; }
+
+dl.docutils dd {
+  margin-bottom: 0.5em }
+
+/* Uncomment (and remove this text!) to get bold-faced definition list terms
+dl.docutils dt {
+  font-weight: bold }
+*/
+
+div.abstract {
+  margin: 2em 5em }
+
+div.abstract p.topic-title {
+  font-weight: bold ;
+  text-align: center }
+
+div.admonition, div.attention, div.caution, div.danger, div.error,
+div.hint, div.important, div.note, div.tip, div.warning {
+  margin: 2em ;
+  border: medium outset ;
+  padding: 1em }
+
+div.admonition p.admonition-title, div.hint p.admonition-title,
+div.important p.admonition-title, div.note p.admonition-title,
+div.tip p.admonition-title {
+  font-weight: bold ;
+  font-family: sans-serif }
+
+div.attention p.admonition-title, div.caution p.admonition-title,
+div.danger p.admonition-title, div.error p.admonition-title,
+div.warning p.admonition-title {
+  color: red ;
+  font-weight: bold ;
+  font-family: sans-serif }
+
+/* Uncomment (and remove this text!) to get reduced vertical space in
+   compound paragraphs.
+div.compound .compound-first, div.compound .compound-middle {
+  margin-bottom: 0.5em }
+
+div.compound .compound-last, div.compound .compound-middle {
+  margin-top: 0.5em }
+*/
+
+div.dedication {
+  margin: 2em 5em ;
+  text-align: center ;
+  font-style: italic }
+
+div.dedication p.topic-title {
+  font-weight: bold ;
+  font-style: normal }
+
+div.figure {
+  margin-left: 2em ;
+  margin-right: 2em }
+
+div.footer, div.header {
+  clear: both;
+  font-size: smaller }
+
+div.line-block {
+  display: block ;
+  margin-top: 1em ;
+  margin-bottom: 1em }
+
+div.line-block div.line-block {
+  margin-top: 0 ;
+  margin-bottom: 0 ;
+  margin-left: 1.5em }
+
+div.sidebar {
+  margin: 0 0 0.5em 1em ;
+  border: medium outset ;
+  padding: 1em ;
+  background-color: #ffffee ;
+  width: 40% ;
+  float: right ;
+  clear: right }
+
+div.sidebar p.rubric {
+  font-family: sans-serif ;
+  font-size: medium }
+
+div.system-messages {
+  margin: 5em }
+
+div.system-messages h1 {
+  color: red }
+
+div.system-message {
+  border: medium outset ;
+  padding: 1em }
+
+div.system-message p.system-message-title {
+  color: red ;
+  font-weight: bold }
+
+div.topic {
+  margin: 2em }
+
+h1.section-subtitle, h2.section-subtitle, h3.section-subtitle,
+h4.section-subtitle, h5.section-subtitle, h6.section-subtitle {
+  margin-top: 0.4em }
+
+h1.title {
+  text-align: center }
+
+h2.subtitle {
+  text-align: center }
+
+hr.docutils {
+  width: 75% }
+
+img.align-left {
+  clear: left }
+
+img.align-right {
+  clear: right }
+
+ol.simple, ul.simple {
+  margin-bottom: 1em }
+
+ol.arabic {
+  list-style: decimal }
+
+ol.loweralpha {
+  list-style: lower-alpha }
+
+ol.upperalpha {
+  list-style: upper-alpha }
+
+ol.lowerroman {
+  list-style: lower-roman }
+
+ol.upperroman {
+  list-style: upper-roman }
+
+p.attribution {
+  text-align: right ;
+  margin-left: 50% }
+
+p.caption {
+  font-style: italic }
+
+p.credits {
+  font-style: italic ;
+  font-size: smaller }
+
+p.label {
+  white-space: nowrap }
+
+p.rubric {
+  font-weight: bold ;
+  font-size: larger ;
+  color: maroon ;
+  text-align: center }
+
+p.sidebar-title {
+  font-family: sans-serif ;
+  font-weight: bold ;
+  font-size: larger }
+
+p.sidebar-subtitle {
+  font-family: sans-serif ;
+  font-weight: bold }
+
+p.topic-title {
+  font-weight: bold }
+
+pre.address {
+  margin-bottom: 0 ;
+  margin-top: 0 ;
+  font-family: serif ;
+  font-size: 100% }
+
+pre.literal-block, pre.doctest-block {
+  margin-left: 2em ;
+  margin-right: 2em }
+
+span.classifier {
+  font-family: sans-serif ;
+  font-style: oblique }
+
+span.classifier-delimiter {
+  font-family: sans-serif ;
+  font-weight: bold }
+
+span.interpreted {
+  font-family: sans-serif }
+
+span.option {
+  white-space: nowrap }
+
+span.pre {
+  white-space: pre }
+
+span.problematic {
+  color: red }
+
+span.section-subtitle {
+  /* font-size relative to parent (h1..h6 element) */
+  font-size: 80% }
+
+table.citation {
+  border-left: solid 1px gray;
+  margin-left: 1px }
+
+table.docinfo {
+  margin: 2em 4em }
+
+table.docutils {
+  margin-top: 0.5em ;
+  margin-bottom: 0.5em }
+
+table.footnote {
+  border-left: solid 1px black;
+  margin-left: 1px }
+
+table.docutils td, table.docutils th,
+table.docinfo td, table.docinfo th {
+  padding-left: 0.5em ;
+  padding-right: 0.5em ;
+  vertical-align: top }
+
+table.docutils th.field-name, table.docinfo th.docinfo-name {
+  font-weight: bold ;
+  text-align: left ;
+  white-space: nowrap ;
+  padding-left: 0 }
+
+h1 tt.docutils, h2 tt.docutils, h3 tt.docutils,
+h4 tt.docutils, h5 tt.docutils, h6 tt.docutils {
+  font-size: 100% }
+
+ul.auto-toc {
+  list-style-type: none }
+
+</style>
+</head>
+<body dir="LTR">
+<div class="document" id="anat-beni-2009-09-03">
+<h1 class="title">Anat &amp; Beni — 2009-09-03</h1>
+
+<!-- ClickTale Top part -->
+<script type="text/javascript">
+var WRInitTime=(new Date()).getTime();
+</script>
+<!-- ClickTale end of Top part --><div align="center" class="align-center"><img alt="hazmana.jpg" class="align-center" src="hazmana.jpg" style="width: 100%;"/></div>
+<div align="center" class="align-center"><img alt="hazmana2.jpg" class="align-center" src="hazmana2.jpg" style="width: 100%;"/></div>
+<table border="1" class="borderless docutils">
+<colgroup>
+<col width="50%"/>
+<col width="50%"/>
+</colgroup>
+<thead valign="bottom">
+<tr><th class="head">Как попасть в зал — с севера</th>
+<th class="head" dir="RTL">הגעה לאולם — מהצפון</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr><td>Позвоните нам если вам нужна помощь с транспортом.</td>
+<td dir="RTL">תתקשרו אלינו אם אתם זקוקים לעזרה עם תחבורה.</td>
+</tr>
+<tr><td><table class="first last docutils field-list" frame="void" rules="none">
+<col class="field-name"/>
+<col class="field-body"/>
+<tbody valign="top">
+<tr class="field"><th class="field-name">Машиной:</th><td class="field-body"><a class="reference external" href="http://maps.google.com/maps?f=d&amp;source=s_d&amp;saddr=%D7%93%D7%A8%D7%9A+%D7%97%D7%98%D7%99%D7%91%D7%AA+%D7%92%D7%95%D7%9C%D7%A0%D7%99&amp;daddr=%D7%93%D7%A8%D7%9A+%D7%94%D7%A2%D7%A6%D7%9E%D7%90%D7%95%D7%AA+to:%D7%A9%D7%93%D7%A8%D7%95%D7%AA+%D7%91%D7%9F+%D7%92%D7%95%D7%A8%D7%99%D7%95%D7%9F+to:%D7%97%D7%99%D7%A4%D7%94,+%D7%94%D7%A8%D7%91+%D7%A4%D7%A8%D7%A5+%D7%97%D7%99%D7%95%D7%AA+to:%D7%9B%D7%91%D7%99%D7%A9+%D7%9C%D7%90+%D7%99%D7%93%D7%95%D7%A2&amp;geocode=FSKl9AEd_CUWAg%3BFb3T9AEdKPwVAg%3BFYTL9AEd4OkVAg%3B%3BFTbO9AEd_KUVAg&amp;hl=iw&amp;mra=mr&amp;mrcr=0&amp;via=1,2&amp;sll=32.822047,34.988194&amp;sspn=0.039454,0.071068&amp;ie=UTF8&amp;ll=32.82028,34.984803&amp;spn=0.019728,0.035534&amp;z=15">Чек-Пост → Черниховский 35 → Парковка &quot;Ораним&quot;</a>
+(самый простой маршрут).</td>
+</tr>
+</tbody>
+</table>
+</td>
+<td dir="RTL"><table class="first last docutils field-list" frame="void" rules="none">
+<col class="field-name"/>
+<col class="field-body"/>
+<tbody valign="top">
+<tr class="field"><th class="field-name">ברכב:</th><td class="field-body"><a class="reference external" href="http://maps.google.com/maps?f=d&amp;source=s_d&amp;saddr=%D7%93%D7%A8%D7%9A+%D7%97%D7%98%D7%99%D7%91%D7%AA+%D7%92%D7%95%D7%9C%D7%A0%D7%99&amp;daddr=%D7%93%D7%A8%D7%9A+%D7%94%D7%A2%D7%A6%D7%9E%D7%90%D7%95%D7%AA+to:%D7%A9%D7%93%D7%A8%D7%95%D7%AA+%D7%91%D7%9F+%D7%92%D7%95%D7%A8%D7%99%D7%95%D7%9F+to:%D7%97%D7%99%D7%A4%D7%94,+%D7%94%D7%A8%D7%91+%D7%A4%D7%A8%D7%A5+%D7%97%D7%99%D7%95%D7%AA+to:%D7%9B%D7%91%D7%99%D7%A9+%D7%9C%D7%90+%D7%99%D7%93%D7%95%D7%A2&amp;geocode=FSKl9AEd_CUWAg%3BFb3T9AEdKPwVAg%3BFYTL9AEd4OkVAg%3B%3BFTbO9AEd_KUVAg&amp;hl=iw&amp;mra=mr&amp;mrcr=0&amp;via=1,2&amp;sll=32.822047,34.988194&amp;sspn=0.039454,0.071068&amp;ie=UTF8&amp;ll=32.82028,34.984803&amp;spn=0.019728,0.035534&amp;z=15">צ'ק־פוסט → טשרניחובסקי 35 → חניית &quot;אורנים&quot;</a>
+(לא המסלול הכי קצר, אבל הכי פשוט).</td>
+</tr>
+</tbody>
+</table>
+</td>
+</tr>
+<tr><td><table class="first last docutils field-list" frame="void" rules="none">
+<col class="field-name"/>
+<col class="field-body"/>
+<tbody valign="top">
+<tr class="field"><th class="field-name">Автобусом:</th><td class="field-body"><p class="first">Из Лев-ХаМифрац: <a class="reference external" href="http://www.otobusim.co.il/otobusim/front2007/LineTravels.asp?CompanyID=1&amp;LineCode=20115&amp;TravelDate=40034&amp;Design=2007&amp;LanguageID=10">115</a> каждые 15 минут, выйти на станции <a class="reference external" href="http://maps.google.com/maps?f=d&amp;source=s_d&amp;saddr=%D7%97%D7%99%D7%A4%D7%94,+%D7%98%D7%A9%D7%A8%D7%A0%D7%99%D7%97%D7%95%D7%91%D7%A1%D7%A7%D7%99+22&amp;daddr=%D7%9B%D7%91%D7%99%D7%A9+%D7%9C%D7%90+%D7%99%D7%93%D7%95%D7%A2&amp;hl=iw&amp;geocode=%3BFTbO9AEd_KUVAg&amp;mra=ls&amp;dirflg=w&amp;sll=32.819649,34.973495&amp;sspn=0.004932,0.008883&amp;ie=UTF8&amp;ll=32.820525,34.973995&amp;spn=0.004932,0.008883&amp;t=h&amp;z=17">Черниховский 22</a>.</p>
+<p class="last">Назад от <a class="reference external" href="http://maps.google.com/maps?f=d&amp;source=s_d&amp;saddr=%D7%97%D7%99%D7%A4%D7%94,+%D7%98%D7%A9%D7%A8%D7%A0%D7%99%D7%97%D7%95%D7%91%D7%A1%D7%A7%D7%99+35&amp;daddr=%D7%9B%D7%91%D7%99%D7%A9+%D7%9C%D7%90+%D7%99%D7%93%D7%95%D7%A2&amp;geocode=%3BFTbO9AEd_KUVAg&amp;hl=iw&amp;mra=ls&amp;dirflg=w&amp;sll=32.820634,34.973876&amp;sspn=0.001233,0.002221&amp;ie=UTF8&amp;ll=32.820794,34.973849&amp;spn=0.004932,0.008883&amp;t=h&amp;z=17">Черниховский Шуферсаль</a> в Лев-ХаМифрац: 115 каждые 30 минут, <a class="reference external" href="http://www.otobusim.co.il/otobusim/front2007/LinePlaces.asp?LineCode=20115&amp;Design=2007&amp;LanguageID=10&amp;CompanyID=1&amp;LineAlternateCode=-842354071&amp;LineDirection=1&amp;DepTime=22:40:00">последний в ~23:00</a>.</p>
+</td>
+</tr>
+</tbody>
+</table>
+</td>
+<td dir="RTL"><table class="first last docutils field-list" frame="void" rules="none">
+<col class="field-name"/>
+<col class="field-body"/>
+<tbody valign="top">
+<tr class="field"><th class="field-name">באוטובוס:</th><td class="field-body"><p class="first">מלב המפרץ: <a class="reference external" href="http://www.otobusim.co.il/otobusim/front2007/LineTravels.asp?CompanyID=1&amp;LineCode=20115&amp;TravelDate=40034&amp;Design=2007&amp;LanguageID=10">115</a> כל 15 דקות, לצאת בתחנה <a class="reference external" href="http://maps.google.com/maps?f=d&amp;source=s_d&amp;saddr=%D7%97%D7%99%D7%A4%D7%94,+%D7%98%D7%A9%D7%A8%D7%A0%D7%99%D7%97%D7%95%D7%91%D7%A1%D7%A7%D7%99+22&amp;daddr=%D7%9B%D7%91%D7%99%D7%A9+%D7%9C%D7%90+%D7%99%D7%93%D7%95%D7%A2&amp;hl=iw&amp;geocode=%3BFTbO9AEd_KUVAg&amp;mra=ls&amp;dirflg=w&amp;sll=32.819649,34.973495&amp;sspn=0.004932,0.008883&amp;ie=UTF8&amp;ll=32.820525,34.973995&amp;spn=0.004932,0.008883&amp;t=h&amp;z=17">טשרניחובסקי 22</a>.</p>
+<p class="last">חזרה מ<a class="reference external" href="http://maps.google.com/maps?f=d&amp;source=s_d&amp;saddr=%D7%97%D7%99%D7%A4%D7%94,+%D7%98%D7%A9%D7%A8%D7%A0%D7%99%D7%97%D7%95%D7%91%D7%A1%D7%A7%D7%99+35&amp;daddr=%D7%9B%D7%91%D7%99%D7%A9+%D7%9C%D7%90+%D7%99%D7%93%D7%95%D7%A2&amp;geocode=%3BFTbO9AEd_KUVAg&amp;hl=iw&amp;mra=ls&amp;dirflg=w&amp;sll=32.820634,34.973876&amp;sspn=0.001233,0.002221&amp;ie=UTF8&amp;ll=32.820794,34.973849&amp;spn=0.004932,0.008883&amp;t=h&amp;z=17">טשרניחובסקי שופרסל</a> ללב המפרץ: 115 כל 30 דקות, <a class="reference external" href="http://www.otobusim.co.il/otobusim/front2007/LinePlaces.asp?LineCode=20115&amp;Design=2007&amp;LanguageID=10&amp;CompanyID=1&amp;LineAlternateCode=-842354071&amp;LineDirection=1&amp;DepTime=22:40:00">אחרון ב~23:00</a>.</p>
+</td>
+</tr>
+</tbody>
+</table>
+</td>
+</tr>
+</tbody>
+</table>
+<table border="1" class="borderless docutils">
+<colgroup>
+<col width="50%"/>
+<col width="50%"/>
+</colgroup>
+<thead valign="bottom">
+<tr><th class="head">Как попасть в зал — с юга</th>
+<th class="head" dir="RTL">הגעה לאולם — מהדרום</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr><td><table class="first last docutils field-list" frame="void" rules="none">
+<col class="field-name"/>
+<col class="field-body"/>
+<tbody valign="top">
+<tr class="field"><th class="field-name">Машиной:</th><td class="field-body"><a class="reference external" href="http://maps.google.com/maps?f=d&amp;source=s_d&amp;saddr=%D7%97%D7%99%D7%A4%D7%94,+%D7%9E%D7%97%D7%9C%D7%A3+%D7%97%D7%99%D7%A4%D7%94+%D7%93%D7%A8%D7%95%D7%9D&amp;daddr=%D7%94%D7%A8%D7%91+%D7%A4%D7%A8%D7%A5+%D7%97%D7%99%D7%95%D7%AA,+%D7%97%D7%99%D7%A4%D7%94,+%D7%99%D7%A9%D7%A8%D7%90%D7%9C+to:%D7%9B%D7%91%D7%99%D7%A9+%D7%9C%D7%90+%D7%99%D7%93%D7%95%D7%A2&amp;geocode=%3B%3BFTbO9AEd_KUVAg&amp;hl=iw&amp;mra=ls&amp;sll=32.820343,34.972765&amp;sspn=0.004932,0.008883&amp;ie=UTF8&amp;ll=32.817034,34.969826&amp;spn=0.019728,0.035534&amp;z=15">Хоф Хакармель → Черниховский 35 → Парковка &quot;Ораним&quot;</a>
+(самый простой маршрут).</td>
+</tr>
+</tbody>
+</table>
+</td>
+<td dir="RTL"><table class="first last docutils field-list" frame="void" rules="none">
+<col class="field-name"/>
+<col class="field-body"/>
+<tbody valign="top">
+<tr class="field"><th class="field-name">ברכב:</th><td class="field-body"><a class="reference external" href="http://maps.google.com/maps?f=d&amp;source=s_d&amp;saddr=%D7%97%D7%99%D7%A4%D7%94,+%D7%9E%D7%97%D7%9C%D7%A3+%D7%97%D7%99%D7%A4%D7%94+%D7%93%D7%A8%D7%95%D7%9D&amp;daddr=%D7%94%D7%A8%D7%91+%D7%A4%D7%A8%D7%A5+%D7%97%D7%99%D7%95%D7%AA,+%D7%97%D7%99%D7%A4%D7%94,+%D7%99%D7%A9%D7%A8%D7%90%D7%9C+to:%D7%9B%D7%91%D7%99%D7%A9+%D7%9C%D7%90+%D7%99%D7%93%D7%95%D7%A2&amp;geocode=%3B%3BFTbO9AEd_KUVAg&amp;hl=iw&amp;mra=ls&amp;sll=32.820343,34.972765&amp;sspn=0.004932,0.008883&amp;ie=UTF8&amp;ll=32.817034,34.969826&amp;spn=0.019728,0.035534&amp;z=15">חוף הכרמל → טשרניחובסקי 35 → חניית &quot;אורנים&quot;</a>
+(לא המסלול הכי קצר, אבל הכי פשוט).</td>
+</tr>
+</tbody>
+</table>
+</td>
+</tr>
+<tr><td><table class="first last docutils field-list" frame="void" rules="none">
+<col class="field-name"/>
+<col class="field-body"/>
+<tbody valign="top">
+<tr class="field"><th class="field-name">Автобусом:</th><td class="field-body"><p class="first">Из Лев-ХаМифрац: <a class="reference external" href="http://www.otobusim.co.il/otobusim/front2007/LineTravels.asp?CompanyID=1&amp;LineCode=20115&amp;TravelDate=40034&amp;Design=2007&amp;LanguageID=10">115</a> каждые 15 минут, выйти на станции <a class="reference external" href="http://maps.google.com/maps?f=d&amp;source=s_d&amp;saddr=%D7%97%D7%99%D7%A4%D7%94,+%D7%98%D7%A9%D7%A8%D7%A0%D7%99%D7%97%D7%95%D7%91%D7%A1%D7%A7%D7%99+35&amp;daddr=%D7%9B%D7%91%D7%99%D7%A9+%D7%9C%D7%90+%D7%99%D7%93%D7%95%D7%A2&amp;geocode=%3BFTbO9AEd_KUVAg&amp;hl=iw&amp;mra=ls&amp;dirflg=w&amp;sll=32.820634,34.973876&amp;sspn=0.001233,0.002221&amp;ie=UTF8&amp;ll=32.820794,34.973849&amp;spn=0.004932,0.008883&amp;t=h&amp;z=17">Черниховский Шуферсаль</a>.</p>
+<p class="last">Назад от <a class="reference external" href="http://maps.google.com/maps?f=d&amp;source=s_d&amp;saddr=%D7%97%D7%99%D7%A4%D7%94,+%D7%98%D7%A9%D7%A8%D7%A0%D7%99%D7%97%D7%95%D7%91%D7%A1%D7%A7%D7%99+22&amp;daddr=%D7%9B%D7%91%D7%99%D7%A9+%D7%9C%D7%90+%D7%99%D7%93%D7%95%D7%A2&amp;hl=iw&amp;geocode=%3BFTbO9AEd_KUVAg&amp;mra=ls&amp;dirflg=w&amp;sll=32.819649,34.973495&amp;sspn=0.004932,0.008883&amp;ie=UTF8&amp;ll=32.820525,34.973995&amp;spn=0.004932,0.008883&amp;t=h&amp;z=17">Черниховский 22</a> в Лев-ХаМифрац: 115 каждые 30 минут, <a class="reference external" href="http://www.otobusim.co.il/otobusim/front2007/LinePlaces.asp?LineCode=20115&amp;Design=2007&amp;LanguageID=10&amp;CompanyID=1&amp;LineAlternateCode=-842354071&amp;LineDirection=1&amp;DepTime=22:40:00">последний в ~23:00</a>.</p>
+</td>
+</tr>
+</tbody>
+</table>
+</td>
+<td dir="RTL"><table class="first last docutils field-list" frame="void" rules="none">
+<col class="field-name"/>
+<col class="field-body"/>
+<tbody valign="top">
+<tr class="field"><th class="field-name">באוטובוס:</th><td class="field-body"><p class="first">מלב המפרץ: <a class="reference external" href="http://www.otobusim.co.il/otobusim/front2007/LineTravels.asp?CompanyID=1&amp;LineCode=20115&amp;TravelDate=40034&amp;Design=2007&amp;LanguageID=10">115</a> כל 15 דקות, לצאת בתחנה <a class="reference external" href="http://maps.google.com/maps?f=d&amp;source=s_d&amp;saddr=%D7%97%D7%99%D7%A4%D7%94,+%D7%98%D7%A9%D7%A8%D7%A0%D7%99%D7%97%D7%95%D7%91%D7%A1%D7%A7%D7%99+35&amp;daddr=%D7%9B%D7%91%D7%99%D7%A9+%D7%9C%D7%90+%D7%99%D7%93%D7%95%D7%A2&amp;geocode=%3BFTbO9AEd_KUVAg&amp;hl=iw&amp;mra=ls&amp;dirflg=w&amp;sll=32.820634,34.973876&amp;sspn=0.001233,0.002221&amp;ie=UTF8&amp;ll=32.820794,34.973849&amp;spn=0.004932,0.008883&amp;t=h&amp;z=17">טשרניחובסקי שופרסל</a>.</p>
+<p class="last">חזרה מ<a class="reference external" href="http://maps.google.com/maps?f=d&amp;source=s_d&amp;saddr=%D7%97%D7%99%D7%A4%D7%94,+%D7%98%D7%A9%D7%A8%D7%A0%D7%99%D7%97%D7%95%D7%91%D7%A1%D7%A7%D7%99+22&amp;daddr=%D7%9B%D7%91%D7%99%D7%A9+%D7%9C%D7%90+%D7%99%D7%93%D7%95%D7%A2&amp;hl=iw&amp;geocode=%3BFTbO9AEd_KUVAg&amp;mra=ls&amp;dirflg=w&amp;sll=32.819649,34.973495&amp;sspn=0.004932,0.008883&amp;ie=UTF8&amp;ll=32.820525,34.973995&amp;spn=0.004932,0.008883&amp;t=h&amp;z=17">טשרניחובסקי 22</a> ללב המפרץ: 115 כל 30 דקות, <a class="reference external" href="http://www.otobusim.co.il/otobusim/front2007/LinePlaces.asp?LineCode=20115&amp;Design=2007&amp;LanguageID=10&amp;CompanyID=1&amp;LineAlternateCode=-842354071&amp;LineDirection=1&amp;DepTime=22:40:00">אחרון ב~23:00</a>.</p>
+</td>
+</tr>
+</tbody>
+</table>
+</td>
+</tr>
+</tbody>
+</table>
+<!-- http://www.oranim-carmel.co.il/ -->
+<table border="1" class="borderless docutils">
+<colgroup>
+<col width="50%"/>
+<col width="50%"/>
+</colgroup>
+<thead valign="bottom">
+<tr><th class="head">4-мерный ‘‘Хупоид’’</th>
+<th class="head" dir="RTL">’’חופויד‘‘ 4־מימדי</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr><td>Что это за странная геометрическая штука на приглашении?</td>
+<td dir="RTL">מה זה המבנה הגאומטרי המוזר בהזמנה?</td>
+</tr>
+<tr><td>Мы ее прозвали Хупоид — <a class="reference external" href="http://en.wikipedia.org/wiki/Huppa">Хупа</a> растянутая в 4-ом измерении, или 4-мерный <a class="reference external" href="http://ru.wikipedia.org/wiki/%D0%93%D0%B8%D0%BF%D0%B5%D1%80%D0%BA%D1%83%D0%B1">Кубоид</a> с схематичным основанием и украшенным верхом.
+(Да, мы странные ;-)</td>
+<td dir="RTL">אנחנו מכנים אותה חופויד — <a class="reference external" href="http://he.wikipedia.org/wiki/%D7%97%D7%95%D7%A4%D7%94">חופה</a> שנמתחה במחימד ה־4, או <a class="reference external" href="http://he.wikipedia.org/wiki/%D7%AA%D7%99%D7%91%D7%94_(%D7%92%D7%90%D7%95%D7%9E%D7%98%D7%A8%D7%99%D7%94)">קובויד</a> עם בסיס סכמטי וגג מעוטר.
+(כן, אנחנו מוזרים ;-)</td>
+</tr>
+<tr><td>Можете ее покрутить с разных углов:</td>
+<td dir="RTL">אתם יכולים לסובב אותה מזוויות שונות:</td>
+</tr>
+</tbody>
+</table>
+<!--[if IE]><h2>This doesn't (yet) work with IE, try Firefox / Chrome</h2><![endif]-->
+<!--[if IE]><script src="excanvas.js" type="text/javascript"></script><![endif]-->
+<script language="javascript" src="bootstrap.js">
+</script><!-- [Source will be posted soon.
+Figures shamelessly stolen from `XKCD 489`_, formal attire from `XKCD 422`_.
+Hint: XKCD scales up really well by `tracing with Inkscape`_.] -->
+<!-- ClickTale Bottom part -->
+<div id="ClickTaleDiv" style="display: none;"/>
+<script src="http://s.clicktale.net/WRb.js" type="text/javascript"/>
+<script type="text/javascript">
+if(typeof ClickTale=='function') ClickTale(6464,1,&quot;www02&quot;);
+</script>
+<!-- ClickTale end of Bottom part -->
+</div>
+</body>
+</html>
