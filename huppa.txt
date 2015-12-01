@@ -115,7 +115,7 @@ Anat & Beni — 2009-09-03
     *
       - Мы ее прозвали Хупоид — Хупа_ растянутая в 4-ом измерении, или 4-мерный Кубоид_ с схематичным основанием и украшенным верхом.
         (Да, мы странные ;-)
-        
+
       - אנחנו מכנים אותה חופויד — חופה_ שנמתחה במחימד ה־4, או קובויד_ עם בסיס סכמטי וגג מעוטר.
         (כן, אנחנו מוזרים ;-)
 
@@ -129,17 +129,19 @@ Anat & Beni — 2009-09-03
 .. _קובויד: http://he.wikipedia.org/wiki/%D7%AA%D7%99%D7%91%D7%94_(%D7%92%D7%90%D7%95%D7%9E%D7%98%D7%A8%D7%99%D7%94)
 .. _кубоид: http://ru.wikipedia.org/wiki/%D0%93%D0%B8%D0%BF%D0%B5%D1%80%D0%BA%D1%83%D0%B1
 
+..
+
 .. raw:: html
 
-    <!--[if IE]><h2>This doesn't (yet) work with IE, try Firefox / Chrome</h2><![endif]-->
-    <!--[if IE]><script src="excanvas.js" type="text/javascript"></script><![endif]-->
-    <script language="javascript" src="bootstrap.js">
+    <script type="text/javascript" src="https://cdn.rawgit.com/brython-dev/brython/3.2.2/www/src/brython.js">
+    </script>
+    <!--[if lte IE 7]><h2>This doesn't work with IE < 9, try Firefox / Chrome</h2><![endif]-->
+    <script>
+      document.body.onload = function() { brython(1) };  // OK since nobody else here sets body.onload
+    </script>
+    <script type="text/python3" src="huppa.py">
     </script>
 
-.. meta::
-    :pygwt\:module: huppa
-
-    
 .. [Source will be posted soon.
    Figures shamelessly stolen from `XKCD 489`_, formal attire from `XKCD 422`_.
    Hint: XKCD scales up really well by `tracing with Inkscape`_.]
@@ -147,13 +149,3 @@ Anat & Beni — 2009-09-03
 .. _XKCD 489: http://xkcd/489
 .. _XKCD 422: http://xkcd/422
 .. _tracing with Inkscape: http://www.inkscape.org/doc/tracing/tutorial-tracing.html
-
-.. raw:: html
-
-    <!-- ClickTale Bottom part -->
-    <div id="ClickTaleDiv" style="display: none;"></div>
-    <script src="http://s.clicktale.net/WRb.js" type="text/javascript"></script>
-    <script type="text/javascript">
-    if(typeof ClickTale=='function') ClickTale(6464,1,"www02");
-    </script>
-    <!-- ClickTale end of Bottom part -->

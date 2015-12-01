@@ -1,13 +1,8 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!DOCTYPE html
-  PUBLIC '-//W3C//DTD XHTML 1.0 Transitional//EN'
-  'http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd'>
-<html lang="en" xml:lang="en" xmlns="http://www.w3.org/1999/xhtml">
+<?xml version="1.0" encoding="utf-8"?><!DOCTYPE html  PUBLIC '-//W3C//DTD XHTML 1.0 Transitional//EN'  'http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd'><html lang="en" xml:lang="en" xmlns="http://www.w3.org/1999/xhtml">
 <head>
 <meta content="text/html; charset=utf-8" http-equiv="Content-Type"/>
-<meta content="Docutils 0.6: http://docutils.sourceforge.net/" name="generator"/>
+<meta content="Docutils 0.12: http://docutils.sourceforge.net/" name="generator"/>
 <title>Anat &amp; Beni — 2009-09-03</title>
-<meta content="huppa" name="pygwt:module"/>
 <style type="text/css">
 
 /*
@@ -307,8 +302,8 @@ ul.auto-toc {
 <script type="text/javascript">
 var WRInitTime=(new Date()).getTime();
 </script>
-<!-- ClickTale end of Top part --><div align="center" class="align-center"><img alt="hazmana.jpg" class="align-center" src="hazmana.jpg" style="width: 100%;"/></div>
-<div align="center" class="align-center"><img alt="hazmana2.jpg" class="align-center" src="hazmana2.jpg" style="width: 100%;"/></div>
+<!-- ClickTale end of Top part --><img alt="hazmana.jpg" class="align-center" src="hazmana.jpg" style="width: 100%;"/>
+<img alt="hazmana2.jpg" class="align-center" src="hazmana2.jpg" style="width: 100%;"/>
 <table border="1" class="borderless docutils">
 <colgroup>
 <col width="50%"/>
@@ -451,19 +446,17 @@ var WRInitTime=(new Date()).getTime();
 </tr>
 </tbody>
 </table>
-<!--[if IE]><h2>This doesn't (yet) work with IE, try Firefox / Chrome</h2><![endif]-->
-<!--[if IE]><script src="excanvas.js" type="text/javascript"></script><![endif]-->
-<script language="javascript" src="bootstrap.js">
+<!--  -->
+<script src="https://cdn.rawgit.com/brython-dev/brython/3.2.2/www/src/brython.js" type="text/javascript">
+</script>
+<!--[if lte IE 7]><h2>This doesn't work with IE < 9, try Firefox / Chrome</h2><![endif]-->
+<script>
+  document.body.onload = function() { brython(1) };  // OK since nobody else here sets body.onload
+</script>
+<script src="huppa.py" type="text/python3">
 </script><!-- [Source will be posted soon.
 Figures shamelessly stolen from `XKCD 489`_, formal attire from `XKCD 422`_.
 Hint: XKCD scales up really well by `tracing with Inkscape`_.] -->
-<!-- ClickTale Bottom part -->
-<div id="ClickTaleDiv" style="display: none;"/>
-<script src="http://s.clicktale.net/WRb.js" type="text/javascript"/>
-<script type="text/javascript">
-if(typeof ClickTale=='function') ClickTale(6464,1,&quot;www02&quot;);
-</script>
-<!-- ClickTale end of Bottom part -->
 </div>
 </body>
 </html>
