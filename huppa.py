@@ -3,6 +3,8 @@
 """
 Render a Schlegel diagram (outer cube connected to inner cube) of a 4-D Huppa.
 """
+
+# Lots of print()s here - poor man's profiler.  Goes to browser console.
 print("Is this thing on?")
 
 import math
@@ -238,13 +240,14 @@ class LinesCanvas(html.CANVAS):
         print("  computed scale =", scale, ".")
 
         # Draw lines.
+        print("  sort()")
         def z_order(line):
             zs = [p.z_order for p in line]
             return (min(zs), max(zs))
+
         # ``lines2d.sort(key=z_order)`` takes 14sec under Brython 3.2.3!
         # z_order() runs twice per comparison :-(
-        # This decorate-sort-undecorate takes <1sec by only running z_order() once per line.
-        print("  sort()")
+        # This decorate-sort-undecorate takes ~1sec by only running z_order() once per line.
         lines2d_sortkeys = [(z_order(line), i) for (i, line) in enumerate(lines2d)]
         lines2d_sortkeys.sort()
         lines2d = [lines2d[i] for (unused, i) in lines2d_sortkeys]
@@ -344,6 +347,7 @@ class Main(html.DIV):
                              # Bottom center (assume source image is square).
                              (-0.8, -1.0, 0.8, 0.6, self.figures_img))
 
+
 def debug():
     """Poor man's python console.
     Useful because browser's JS console doesn't give sane access to Brython objects.
@@ -378,20 +382,13 @@ def debug():
                                  output +
                                  html.HR())
 
-l = [1.0, 2.0, 3.0]
-p = Point(l)
-q = list(p)
-print(l, p, q, q is p)
-x = l[0]
-x += 10
-y = p[1]
-y += 20
-z = q[2]
-z += 30
-print(l, p, q, p is l, q is p)
-
 if __name__ == '__main__':
     main = Main()
-    browser.document <= main
+    target = browser.document.getElementById('huppoid_here')
+    target.html = ''  # replace any fallback content
+    target <= main
     main.draw()
-    debug()
+
+    # We don't really need `.getlist()` but for some reason `.getvalue()` doesn't work.
+    if browser.document.query.getlist('debug') is not None:
+        debug()

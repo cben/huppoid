@@ -129,16 +129,21 @@ Anat & Beni — 2009-09-03
 .. _קובויד: http://he.wikipedia.org/wiki/%D7%AA%D7%99%D7%91%D7%94_(%D7%92%D7%90%D7%95%D7%9E%D7%98%D7%A8%D7%99%D7%94)
 .. _кубоид: http://ru.wikipedia.org/wiki/%D0%93%D0%B8%D0%BF%D0%B5%D1%80%D0%BA%D1%83%D0%B1
 
-..
-
 .. raw:: html
 
+    <!-- Caveat: newline/whitespace before closing script tag is required lest
+         docutils minimize the script tag to be self-closing, which doesn't
+         work unless we actually serve with an XHTML mime type. -->
     <script type="text/javascript" src="https://cdn.rawgit.com/brython-dev/brython/3.2.2/www/src/brython.js">
     </script>
-    <!--[if lte IE 7]><h2>This doesn't work with IE < 9, try Firefox / Chrome</h2><![endif]-->
-    <script>
-      document.body.onload = function() { brython(1) };  // OK since nobody else here sets body.onload
+    <script type="text/javascript">
+      // OK since nobody else here sets body.onload
+      document.body.onload = function() { brython({debug: 1}); };
     </script>
+
+    <center id="huppoid_here">
+       <i>Running huppa.py... If you see nothing, make sure you're using a modern browser e.g. Firefox or Chrome. IE 9+ might work too (untested). If you're wondering, no — IE 9 didn't exist back then, I've updated this later.</i>
+    </center>
     <script type="text/python3" src="huppa.py">
     </script>
 
