@@ -14,20 +14,6 @@ import browser
 import browser.html as html
 import javascript
 
-# Compatibility stubs
-# ===================
-
-# Pyjamas has no zip()!
-def zip(*lists):
-    return [tuple([l[i] for l in lists])
-            for i in range(len(lists[0]))]
-
-# Pyjamas doesn't support + operator overloading!
-# + on anything other than numbers returns concatenation of their
-# string representations, e.g.: [1]+[2,3]=="[1][2,3]".
-def concat(*seqs):
-    return [item for seq in seqs for item in seq]
-
 
 # Geometric model
 # ===============
@@ -84,12 +70,8 @@ class Cuboid(object):
             fixed1 = fixed_axes.copy()
             fixed1[axis] = +size
             facet1 = Cuboid(sizes[1:], fixed1)
-            self.points = concat(facet0.points, facet1.points)
-            self.lines = concat(
-                facet0.lines,
-                zip(facet0.points, facet1.points),
-                facet1.lines,
-                )
+            self.points = facet0.points + facet1.points
+            self.lines = facet0.lines + list(zip(facet0.points, facet1.points)) + facet1.lines
 
 class Huppoid(Cuboid):
     """
@@ -105,7 +87,7 @@ class Huppoid(Cuboid):
         facet0 = Cuboid(sizes[1:], {y_axis: -y_size})
         facet1 = Cuboid(sizes[1:], {y_axis: +y_size})
         print("  2 Cuboids computed.")
-        self.points = concat(facet0.points, facet1.points)
+        self.points = facet0.points + facet1.points
 
         self.lines = []
         # bottom cube - make dashed lines
