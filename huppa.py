@@ -70,14 +70,16 @@ class Line(list):
         context.restore()
 
 
-class FlatImage(html.IMG):
-    """An image drawn on the XY plane (Z=W=0)."""
-    def __init__(self, src, x0, y0, x1, y1):
-        html.IMG.__init__(self, src=src)
-        self.x0, self.y0, self.x1, self.y1 = x0, y0, x1, y1
+class FlatImage():
+    """An image drawn on the XY plane."""
+    def __init__(self, img_element, corner0, corner1):
+        self.img_element = img_element
+        self.corner0 = corner0
+        self.corner1 = corner1
 
     def draw_on_canvas(self, context, scale):
-        x0, y0, x1, y1 = self.x0, self.y0, self.x1, self.y1
+        x0, y0, z, w = self.corner0
+        x1, y1, z, w = self.corner1
 
         # In math coords (Y grows up), the image should have negative height.
         # Firefox doesn't (didn't in 2009?) support negative height.
@@ -85,7 +87,7 @@ class FlatImage(html.IMG):
         y0, y1 = -y1, -y0
         context.save()
         context.scale(1, -1)
-        context.drawImage(self,
+        context.drawImage(self.img_element,
                           x0 * scale, y0 * scale,
                           (x1 - x0) * scale, (y1 - y0) * scale)
         context.restore()
@@ -278,9 +280,16 @@ class LinesCanvas(html.CANVAS):
 
         points2d = list(map(transform, points))
 
-        # Shortcut: Image is at XY plane (Z=W=0) so needs no transform.  TODO: am I sure?
+        images2d = []
+        for image in images:
+            image2d = FlatImage(image.img_element,
+                                transform(image.corner0),
+                                transform(image.corner1))
+            assert image2d.corner0.z_order == image2d.corner1.z_order
+            image2d.z_order = image2d.corner0.z_order
+            images2d.append(image2d)
 
-        # objects = lines2d + points2d + images
+        # objects = lines2d + points2d + images2d
 
         print("  sort()")
         def line_z_order(line):
@@ -293,9 +302,10 @@ class LinesCanvas(html.CANVAS):
         # z_order() runs twice per comparison :-(
         # decorate-sort-undecorate takes ~1sec by only running z_order() once per line.
         # Use a 2-tier group, index scheme for resolving back the objects.
+        global sortkeys, lines2d, points2d
         sortkeys = ([(line_z_order(line), 'line', i) for i, line in enumerate(lines2d)] +
                     [((point.z_order, point.z_order), 'point', i) for i, point in enumerate(points2d)] +
-                    [((0, 0), 'image', i) for i, image in enumerate(images)])
+                    [((image.z_order, image.z_order), 'image', i) for i, image in enumerate(images2d)])
         sortkeys.sort()
         groups = {'line': lines2d, 'point': points2d, 'image': images}
         objects = [groups[group][i] for (unused, group, i) in sortkeys]
@@ -326,9 +336,11 @@ class Main(html.DIV):
         self <= self.canvas
 
         # Start img fetch early, specifically before we compute the Huppoid.
-        self.figures_img = FlatImage(src='figures.png',
-                                     # Bottom center (assume source image is square).
-                                     x0=-0.8, y0=-1.0, x1=0.8, y1=0.6)
+        self.figures_img = html.IMG(src='figures.png')
+        self.image = FlatImage(self.figures_img,
+                               # Bottom center 1.6x1.6 (assumes source image is square).
+                               corner0=Point((-0.8, -1.0, 0, 0)),
+                               corner1=Point((+0.8, +0.6, 0, 0)))
 
         self.boxes = []
         for axis, c in zip("xyzw", (0, 1.7, 6, 20)):
@@ -359,7 +371,7 @@ class Main(html.DIV):
             self.canvas.draw(self.projection.transform,
                              self.huppoid.lines,
                              self.huppoid.points,
-                             [self.figures_img])
+                             [self.image])
 
 
 def debug():
@@ -374,17 +386,16 @@ def debug():
         # Our console overwrites outputs in-place, so also dump full "history" into browser's console.
         print('>>> ' + prompt.value)
         try:
-            try:
-                code = compile(prompt.value, "<debug input>", 'eval')
-            except SyntaxError:
-                code = compile(prompt.value, "<debug input>", 'exec')
-            value = eval(code)
+            value = eval(prompt.value)
             # Native JS objects (e.g. DOM nodes) are reflected as having no __repr__
-            # but all seem support str() via toString().
+            # but all seem to support str() - probably via ``.toString()``.
             try:
                 res = repr(value)
             except:
                 res = str(value)
+        except SyntaxError:
+            exec(prompt.value)
+            res = ''
         except:
             res = traceback.format_exc()
         output.text = res
