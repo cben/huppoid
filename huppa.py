@@ -71,11 +71,10 @@ class Line(list):
 
 
 class FlatImage(html.IMG):
-    """An image drawn on XY plane."""
-    def __init__(self, src, x0, y0, x1, y1, z):
+    """An image drawn on the XY plane (Z=W=0)."""
+    def __init__(self, src, x0, y0, x1, y1):
         html.IMG.__init__(self, src=src)
         self.x0, self.y0, self.x1, self.y1 = x0, y0, x1, y1
-        self.z_order = z
 
     def draw_on_canvas(self, context, scale):
         x0, y0, x1, y1 = self.x0, self.y0, self.x1, self.y1
@@ -90,7 +89,6 @@ class FlatImage(html.IMG):
                           x0 * scale, y0 * scale,
                           (x1 - x0) * scale, (y1 - y0) * scale)
         context.restore()
-
 
 
 def style_lines(lines, width):
@@ -170,11 +168,11 @@ class Huppoid(Cuboid):
 
     def dash(self, line, segments=9):
         p0, p1 = line
-        return map(lambda i: [interpolate(p0, p1, i / segments),
-                              interpolate(p0, p1, (i + 1) / segments)],
-                   range(0, segments, 2))
+        return [[interpolate(p0, p1, i / segments),
+                 interpolate(p0, p1, (i + 1) / segments)]
+                for i in range(0, segments, 2)]
 
-    def wavy(self, line, y_axis, drop=0.1, periods=3, segments=300):
+    def wavy(self, line, y_axis, drop=0.1, periods=3, segments=30):
         wavy = []
         p0, p1 = line
         for i in range(segments + 1):
@@ -249,7 +247,14 @@ class LinesCanvas(html.CANVAS):
         context.clearRect(-self.w/2, -self.h/2, self.w, self.h)
         print("  clearRect.")
 
-        # Transform, add white lines slightly behind real lines.
+        # We'll transform some points several times, both as
+        # standalone points and as ends of (several) lines.  But most
+        # of the points are intermediate points on dashed/wavy lines;
+        # we have 460 unique points and do about 548 transforms total,
+        # so optimizing it is hardly worth it.
+
+        # Transform lines, add wider white lines slightly behind real lines
+        # to create front-obscures-back effect at crossings.
         lines2d = []
         for line in lines:
             black_line = Line(map(transform, line))
@@ -271,6 +276,31 @@ class LinesCanvas(html.CANVAS):
             lines2d.append(white_line)
         print("  created white and black 2d lines, total", len(lines2d), ".")
 
+        points2d = list(map(transform, points))
+
+        # Shortcut: Image is at XY plane (Z=W=0) so needs no transform.  TODO: am I sure?
+
+        # objects = lines2d + points2d + images
+
+        print("  sort()")
+        def line_z_order(line):
+            zs = [p.z_order for p in line]
+            # (min, max) order ensures front-back connecting lines are
+            # drawn after back and before front.
+            return (min(zs), max(zs))
+
+        # ``lines2d.sort(key=line_z_order)`` takes 14sec under Brython 3.2.3!
+        # z_order() runs twice per comparison :-(
+        # decorate-sort-undecorate takes ~1sec by only running z_order() once per line.
+        # Use a 2-tier group, index scheme for resolving back the objects.
+        sortkeys = ([(line_z_order(line), 'line', i) for i, line in enumerate(lines2d)] +
+                    [((point.z_order, point.z_order), 'point', i) for i, point in enumerate(points2d)] +
+                    [((0, 0), 'image', i) for i, image in enumerate(images)])
+        sortkeys.sort()
+        groups = {'line': lines2d, 'point': points2d, 'image': images}
+        objects = [groups[group][i] for (unused, group, i) in sortkeys]
+        print("  z-sorted.")
+
         # Find bounding square (centered around 0,0).
         xs = [abs(x)
               for line in lines2d
@@ -284,37 +314,9 @@ class LinesCanvas(html.CANVAS):
         print("  computed scale =", scale, ".")
         # TODO: use context.scale instead of passing scale around?
 
-        # Draw lines.
-        print("  sort()")
-        def z_order(line):
-            zs = [p.z_order for p in line]
-            return (min(zs), max(zs))  # TODO: does secondary max(zs) actually change anything?
-
-        # ``lines2d.sort(key=z_order)`` takes 14sec under Brython 3.2.3!
-        # z_order() runs twice per comparison :-(
-        # This decorate-sort-undecorate takes ~1sec by only running z_order() once per line.
-        lines2d_sortkeys = [(z_order(line), i) for (i, line) in enumerate(lines2d)]
-        lines2d_sortkeys.sort()
-        lines2d = [lines2d[i] for (unused, i) in lines2d_sortkeys]
-        print("  computed and z-sorted. drawing...")
-
-        for line in lines2d:
-            line.draw_on_canvas(context, scale)
-        print("  drew lines")
-
-        # Draw points.
-        # No white points underneath them => no need for z-order, black is additive.
-        # TODO: This is not strictly true in point-lines and point-image interactions!
-        for p in points:
-            p2d = transform(p)
-            p2d.draw_on_canvas(context, scale)
-        print("  drew points")
-
-        # Draw image.
-        # TODO: Always on top is wrong, should observe z-order.
-        for image in images:
-            image.draw_on_canvas(context, scale)
-        print("  drew img")
+        for obj in objects:
+            obj.draw_on_canvas(context, scale)
+        print("  drew.")
 
 
 class Main(html.DIV):
@@ -326,7 +328,7 @@ class Main(html.DIV):
         # Start img fetch early, specifically before we compute the Huppoid.
         self.figures_img = FlatImage(src='figures.png',
                                      # Bottom center (assume source image is square).
-                                     x0=-0.8, y0=-1.0, x1=0.8, y1=0.6, z=0)
+                                     x0=-0.8, y0=-1.0, x1=0.8, y1=0.6)
 
         self.boxes = []
         for axis, c in zip("xyzw", (0, 1.7, 6, 20)):
