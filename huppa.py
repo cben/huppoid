@@ -343,30 +343,48 @@ class Main(html.DIV):
                                corner1=Point((+0.8, +0.6, 0, 0)))
 
         self.boxes = []
-        for axis, c in zip("xyzw", (0, 1.7, 6, 20)):
+        for (axis, value) in zip("XYZW", (0, 1.7, 6, 20)):
             box = html.INPUT(type='number', step='0.5')
-            box.value = str(c)
-            box.bind('keyup', lambda ev: self.draw())
-            box.bind('input', lambda ev: self.draw())
+            box.value = str(value)
+            box.bind('keyup', self.onedit)
+            box.bind('input', self.onedit)
             self.boxes.append(box)
             self <= html.DIV(html.LABEL("Camera %s:" % axis) + box)
-        self.camera = None  # force first redraw
+        self.set_boxes_from_hash()
+        browser.window.onhashchange = self.onhashchange
+        self.last_camera = None  # first draw() should always draw.
+
         # first axis is Y - direction of huppoid
         # second axis is Z for correct Z-order.
         self.huppoid = Huppoid([(1,1), (2,1), (3,1), (0,1)])
+
+    def onhashchange(self, event):
+        self.set_boxes_from_hash()
+        self.draw()
+
+    def set_boxes_from_hash(self):
+        if ',' in browser.window.location.hash:
+            camera = map(float, browser.window.location.hash.lstrip('#').split(','))
+        for box, c in zip(self.boxes, camera):
+            box.value = str(c)
+
+    def onedit(self, event):
+        self.draw()
+        # I don't want this to appear for all visitors, only after they move the camera.
+        browser.window.location.hash = '#%s,%s,%s,%s' % tuple(self.last_camera)
 
     def draw(self):
         camera = [float(box.value)
                   for box in self.boxes]
         # guard against spurious redrawing (e.g. arrows or Tab presses)
-        if camera != self.camera:
+        if camera != self.last_camera:
             if not self.figures_img.complete:
                 print("postponing draw() until img loads")
                 self.figures_img.bind('load', lambda ev: self.draw())
                 return
 
             print("(re)drawing for camera =", camera)
-            self.camera = camera
+            self.last_camera = camera
             self.projection = Project2D(camera)
             self.canvas.draw(self.projection.transform,
                              self.huppoid.lines,
@@ -415,6 +433,5 @@ if __name__ == '__main__':
     target <= main
     main.draw()
 
-    # We don't really need `.getlist()` but for some reason `.getvalue()` doesn't work.
-    if browser.document.query.getlist('debug') is not None:
+    if browser.document.query.getfirst('debug') is not None:
         debug()
