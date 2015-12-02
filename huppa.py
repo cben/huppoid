@@ -1,5 +1,11 @@
 # This is a Brython script, which means roughly Python 3.
 
+# TODO: painfully slow under Brython (was much faster with Pyjamas).
+# I'm not sure why I used <canvas> when I wrote this in 2009 but I
+# think SVG had even less support then?  Anyway, nowdays could use SVG
+# or WebGL - but it's not the drawing that's slow, it's EVERYTHING in Brython!
+# Just computing the Huppoid's 16 points and 92 lines takes many seconds :-(
+
 """
 Render a Schlegel diagram (outer cube connected to inner cube) of a 4-D Huppa.
 """
@@ -15,13 +21,27 @@ import browser.html as html
 import javascript
 
 
-# Geometric model
-# ===============
+# Geometric model (and canvas drawing)
+# ====================================
+# Ideally these should be drawing-independent.
+# But the final drawing is done by z-sorting points, lines, and the image all together
+# and drawing them all.  So it's simplest if every object can draw itself.
 
 class Point(tuple):
     """A point in some number of dimensions.
     Sometimes will have a .z_order attribute added."""
-    pass
+
+    def draw_on_canvas(self, context, scale):
+        """Only works for 2D points."""
+        context.save()
+        context.fillStyle = 'black'
+
+        context.beginPath()
+        x, y = self
+        context.arc(x * scale, y * scale, 5, 0, math.pi * 2, False)
+        context.fill()
+        context.restore()
+
 
 class Line(list):
     """A sequence of points, with some style attributes.  Each point is a list of coordinates.
@@ -31,18 +51,61 @@ class Line(list):
     mode = 'source-over'
     width = 10  # highlight mistakes
 
+    def draw_on_canvas(self, context, scale):
+        """Only works for 2D points."""
+        context.save()
+        context.lineJoin = 'round'
+        context.lineWidth = self.width
+        context.lineCap = self.cap
+        context.strokeStyle = self.color
+        context.globalCompositeOperation = self.mode
+
+        context.beginPath()
+        p0 = self[0]
+        context.moveTo(p0[0] * scale, p0[1] * scale)
+        for p1 in self[1:]:
+            context.lineTo(p1[0] * scale, p1[1] * scale)
+            p0 = p1
+        context.stroke()
+        context.restore()
+
+
+class FlatImage(html.IMG):
+    """An image drawn on XY plane."""
+    def __init__(self, src, x0, y0, x1, y1, z):
+        html.IMG.__init__(self, src=src)
+        self.x0, self.y0, self.x1, self.y1 = x0, y0, x1, y1
+        self.z_order = z
+
+    def draw_on_canvas(self, context, scale):
+        x0, y0, x1, y1 = self.x0, self.y0, self.x1, self.y1
+
+        # In math coords (Y grows up), the image should have negative height.
+        # Firefox doesn't (didn't in 2009?) support negative height.
+        # => Work around by temporarily returning to Y-down coords.
+        y0, y1 = -y1, -y0
+        context.save()
+        context.scale(1, -1)
+        context.drawImage(self,
+                          x0 * scale, y0 * scale,
+                          (x1 - x0) * scale, (y1 - y0) * scale)
+        context.restore()
+
+
+
 def style_lines(lines, width):
-    lines = [Line(l) for l in lines]
+    lines = list(map(Line, lines))
     for line in lines:
         line.width = width
     return lines
+
 
 def interpolate(p0, p1, ratio):
     """
     Linear interpolation - ratio=0 gives p0, 1 gives p1.
     """
-    return [x0 * (1 - ratio) + x1 * ratio
-            for x0, x1 in zip(p0, p1)]
+    return Point(map(lambda x: x[0] * (1 - ratio) + x[1] * ratio, zip(p0, p1)))
+
 
 class Cuboid(object):
     """
@@ -73,6 +136,7 @@ class Cuboid(object):
             self.points = facet0.points + facet1.points
             self.lines = facet0.lines + list(zip(facet0.points, facet1.points)) + facet1.lines
 
+
 class Huppoid(Cuboid):
     """
     4-dimentional cuboid with tweaks.
@@ -98,22 +162,19 @@ class Huppoid(Cuboid):
         self.lines.extend(style_lines(zip(facet0.points, facet1.points), width=4))
         print("  added vertical.")
 
-        # add a pretty wavy fabric
+        # top cube - add a pretty wavy fabric
         for line in facet1.lines:
-            wavy = self.wavy(line, y_axis)
-            # the stright line should obscure the wavy fabric
             self.lines.extend(style_lines([line], width=5))
-            self.lines.extend(style_lines(wavy, width=3))
+            self.lines.extend(style_lines(self.wavy(line, y_axis), width=3))
         print("  added wavy.")
 
     def dash(self, line, segments=9):
         p0, p1 = line
-        return [[interpolate(p0, p1, i / segments),
-                 interpolate(p0, p1, (i + 1) / segments)]
-                for i in range(segments)
-                if i % 2 == 0]
+        return map(lambda i: [interpolate(p0, p1, i / segments),
+                              interpolate(p0, p1, (i + 1) / segments)],
+                   range(0, segments, 2))
 
-    def wavy(self, line, y_axis, drop=0.1, periods=3, segments=30):
+    def wavy(self, line, y_axis, drop=0.1, periods=3, segments=300):
         wavy = []
         p0, p1 = line
         for i in range(segments + 1):
@@ -161,6 +222,7 @@ class Project2D(object):
         res.z_order = z
         return res
 
+
 # Canvas interface
 # ================
 
@@ -180,7 +242,7 @@ class LinesCanvas(html.CANVAS):
         # use math coords: y should grow upwards, not downwards
         context.scale(1, -1)
 
-    def draw(self, transform, lines, points, figures_coords_and_img):
+    def draw(self, transform, lines, points, images):
         print("draw()")
         context = self.context
 
@@ -220,12 +282,13 @@ class LinesCanvas(html.CANVAS):
         scale = 0.9 * min(self.w / 2 / max(xs),
                           self.h / 2 / max(ys))
         print("  computed scale =", scale, ".")
+        # TODO: use context.scale instead of passing scale around?
 
         # Draw lines.
         print("  sort()")
         def z_order(line):
             zs = [p.z_order for p in line]
-            return (min(zs), max(zs))
+            return (min(zs), max(zs))  # TODO: does secondary max(zs) actually change anything?
 
         # ``lines2d.sort(key=z_order)`` takes 14sec under Brython 3.2.3!
         # z_order() runs twice per comparison :-(
@@ -235,57 +298,24 @@ class LinesCanvas(html.CANVAS):
         lines2d = [lines2d[i] for (unused, i) in lines2d_sortkeys]
         print("  computed and z-sorted. drawing...")
 
-        context.lineJoin = 'round'
         for line in lines2d:
-            context.lineWidth = line.width
-            context.lineCap = line.cap
-            context.strokeStyle = line.color
-            context.globalCompositeOperation = line.mode
-
-            context.beginPath()
-            p0 = line[0]
-            context.moveTo(p0[0] * scale, p0[1] * scale)
-            for p1 in line[1:]:
-                context.lineTo(p1[0] * scale, p1[1] * scale)
-                p0 = p1
-            context.stroke()
+            line.draw_on_canvas(context, scale)
         print("  drew lines")
 
         # Draw points.
         # No white points underneath them => no need for z-order, black is additive.
         # TODO: This is not strictly true in point-lines and point-image interactions!
-        context.fillStyle = 'black'
         for p in points:
-            x, y = transform(p)
-            context.beginPath()
-            context.arc(x * scale, y * scale, 5, 0, math.pi * 2, False)
-            context.fill()
+            p2d = transform(p)
+            p2d.draw_on_canvas(context, scale)
         print("  drew points")
 
         # Draw image.
         # TODO: Always on top is wrong, should observe z-order.
-        x0, y0, x1, y1, img = figures_coords_and_img
-        # In math coords (Y grows up), the image should have negative height.
-        # Firefox doesn't support negative height.
-        # => Work around by temporarily returning to Y-down coords.
-        y0, y1 = -y1, -y0
-        context.save()
-        context.scale(1, -1)
-        try:
-            # This fails with a mysterious NS_ERROR_NOT_AVAILABLE error
-            # if the image is not already in cache (at least on Firefox).
-            # Attempt to continue instead of dying horribly - doesn't work(?).
-            context.drawImage(img,
-                              x0 * scale, y0 * scale,
-                              (x1 - x0) * scale, (y1 - y0) * scale)
-        except Exception as e:
-            print(e)
-        context.restore()
+        for image in images:
+            image.draw_on_canvas(context, scale)
         print("  drew img")
 
-# Load JS image objects (bug in Brython 3.0 : can't load IMG object directly wthout using a javascript.JSConstructor object) -- http://webswap.free.fr/brythonrocks/simple.html
-# Was known to not work in OSX Safari?
-Image = javascript.JSConstructor(browser.window.Image)
 
 class Main(html.DIV):
     def __init__(self):
@@ -294,8 +324,9 @@ class Main(html.DIV):
         self <= self.canvas
 
         # Start img fetch early, specifically before we compute the Huppoid.
-        self.figures_img = Image()
-        self.figures_img.src = 'figures.png'
+        self.figures_img = FlatImage(src='figures.png',
+                                     # Bottom center (assume source image is square).
+                                     x0=-0.8, y0=-1.0, x1=0.8, y1=0.6, z=0)
 
         self.boxes = []
         for axis, c in zip("xyzw", (0, 1.7, 6, 20)):
@@ -326,8 +357,7 @@ class Main(html.DIV):
             self.canvas.draw(self.projection.transform,
                              self.huppoid.lines,
                              self.huppoid.points,
-                             # Bottom center (assume source image is square).
-                             (-0.8, -1.0, 0.8, 0.6, self.figures_img))
+                             [self.figures_img])
 
 
 def debug():
@@ -335,8 +365,9 @@ def debug():
     Useful because browser's JS console doesn't give sane access to Brython objects.
     """
     import traceback
+
     prompt = html.INPUT(type='text', size=80, style={'font-family': 'monospace'})
-    output = html.PRE()
+    output = html.PRE(style={'white-space': 'pre-wrap'})
     def rep():
         # Our console overwrites outputs in-place, so also dump full "history" into browser's console.
         print('>>> ' + prompt.value)
