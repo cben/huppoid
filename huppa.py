@@ -378,12 +378,8 @@ class LinesCanvas(html.CANVAS):
         print("  z-sorted.")
 
         # Find bounding square (centered around 0,0).
-        xs = [abs(x)
-              for line in lines2d
-              for (x, y) in line]
-        ys = [abs(y)
-              for line in lines2d
-              for (x, y) in line]
+        xs = [abs(x) for (x, y) in points2d]
+        ys = [abs(y) for (x, y) in points2d]
         # scale to leave small margin
         scale = 0.9 * min(self.w / 2 / max(xs),
                           self.h / 2 / max(ys))
