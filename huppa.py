@@ -491,10 +491,15 @@ def debug():
 
 
 if __name__ == '__main__':
+    if browser.document.query.getfirst('clearpage') is not None:
+        [target] = browser.document[html.BODY]
+    else:
+        target = browser.document.getElementById('huppoid_here')
+    target.innerHTML = ''  # replace any fallback content
+
     if browser.document.query.getfirst('debug') is not None:
         debug()
+
     main = Main()
-    target = browser.document.getElementById('huppoid_here')
-    target.html = ''  # replace any fallback content
     target <= main
     main.draw()

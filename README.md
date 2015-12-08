@@ -18,7 +18,6 @@ As Pyjs does browser sniffing and requires compilation, I figured [Brython](http
 
 > **=> https://cben.github.io/huppoid/huppa.html**
 
-[Dev note: huppa.py is loaded via XHR which may not work from a `file://` local checkout, a web server is needed.]
 Alas Brython turned out waaay slower than the 2009 version (even with Moore's law?!), but oh well.
 (If I were to write it now, I'd have used something with 1:1 translation to JS such as Coffeescript or Rapydscript, or just raw JS.  And WebGL.)
 
@@ -26,7 +25,14 @@ I also found the z-order (aka painter's algorithm) was very lacking — it alway
 I somewhat improved the sorting but there are still some buggy angles, e.g. https://cben.github.io/huppoid/huppa.html#-5.0,3.0,4.0,5.0 .
 I'm not sure it's even possible always find a correct drawing order without splitting objects or *per-pixel* z-buffer...
 
-----------
+## Debugging
+
+- `huppa.py` is loaded via XHR which may not work from a `file://` local checkout, a web server is needed.
+- Prints & exceptions go to JS console.
+- Accessing Brython from JS console is hard (`__BRYTHON__.builtins.getattr(__BRYTHON__.globals().main, 'draw')`...).
+  Instead, add `?debug=` to get a very simple in-page *Python* console (type, press Enter, see JS console for history).
+  See also http://brython.info/static_doc/en/test.html.
+- Add `?clearpage=` to remove the static images & text - helps with screenshotting/cross-browser testing tools.
 
 ## Attribution & License
 
