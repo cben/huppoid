@@ -1,6 +1,6 @@
 # Retroactive: Code from our wedding invitation (2009)
 
-We ([@anpc](github.com/anpc) & [@cben](https://github.com/cben)) wanted something geeky and XKCD-ish for our wedding invitation and came up with a [Huppa](https://en.wikipedia.org/wiki/Huppa) extended in the 4th dimension, or a 4-dimensional [Cubiod](https://en.wikipedia.org/wiki/Cuboid) with frills:
+We ([@anpc](https://github.com/anpc) & [@cben](https://github.com/cben)) wanted something geeky and XKCD-ish for our wedding invitation and came up with a [Huppa](https://en.wikipedia.org/wiki/Huppa) extended in the 4th dimension, or a 4-dimensional [Cubiod](https://en.wikipedia.org/wiki/Cuboid) with frills:
 
 ![Huppoid image](canvas.png)
 
