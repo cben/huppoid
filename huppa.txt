@@ -2,14 +2,6 @@
 Anat & Beni — 2009-09-03
 ========================
 
-.. raw:: html
-
-    <!-- ClickTale Top part -->
-    <script type="text/javascript">
-    var WRInitTime=(new Date()).getTime();
-    </script>
-    <!-- ClickTale end of Top part -->
-
 .. image:: hazmana.jpg
     :align: center
     :width: 100%
@@ -137,8 +129,10 @@ Anat & Beni — 2009-09-03
     <script type="text/javascript" src="https://cdn.rawgit.com/brython-dev/brython/3.2.2/www/src/brython.js">
     </script>
     <script type="text/javascript">
+      /*<![CDATA[ - helps XHTML served as HTML. */
       // OK since nobody else here sets body.onload
       document.body.onload = function() { brython({debug: 1}); };
+      /*]]>*/
     </script>
 
     <center id="huppoid_here">
@@ -147,10 +141,7 @@ Anat & Beni — 2009-09-03
     <script type="text/python3" src="huppa.py">
     </script>
 
-.. [Source will be posted soon.
-   Figures shamelessly stolen from `XKCD 489`_, formal attire from `XKCD 422`_.
-   Hint: XKCD scales up really well by `tracing with Inkscape`_.]
+----
 
-.. _XKCD 489: http://xkcd/489
-.. _XKCD 422: http://xkcd/422
-.. _tracing with Inkscape: http://www.inkscape.org/doc/tracing/tutorial-tracing.html
+Source: https://github.com/cben/huppoid.
+Stick figures were shamelessly stolen from https://xkcd.com/489, formal attire from https://xkcd.com/422.

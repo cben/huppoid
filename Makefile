@@ -12,7 +12,7 @@ hibidi.py:
 
 html: huppa.html
 
-huppa.html: huppa.txt ru-he.css docutils.conf ${RST2HTML} hibidi.py
+huppa.html: huppa.txt my.css docutils.conf ${RST2HTML} hibidi.py
 	${RST2HTML} huppa.txt | python ./hibidi.py > huppa.html
 
 clean:

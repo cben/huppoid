@@ -7,7 +7,7 @@
 
 /*
 :Author: David Goodger (goodger@python.org)
-:Id: $Id: html4css1.css 5196 2007-06-03 20:25:28Z wiemann $
+:Id: $Id: html4css1.css 7614 2013-02-21 15:55:51Z milde $
 :Copyright: This stylesheet has been placed in the public domain.
 
 Default cascading style sheet for the HTML output of Docutils.
@@ -25,19 +25,6 @@ table.borderless td, table.borderless th {
      The right padding separates the table cells. */
   padding: 0 0.5em 0 0 ! important }
 
-th.head {
-  font-size: 150% }
-
-th.stud {
-  text-align: left;
-  font-weight: normal }
-/*
-th, td {
-  direction: rtl }
-
-th.stub, td.stub {
-  direction: ltr ! important }
-*/
 .first {
   /* Override more specific margin styles with &quot;! important&quot;. */
   margin-top: 0 ! important }
@@ -57,6 +44,10 @@ blockquote.epigraph {
 
 dl.docutils dd {
   margin-bottom: 0.5em }
+
+object[type=&quot;image/svg+xml&quot;], object[type=&quot;application/x-shockwave-flash&quot;] {
+  overflow: hidden;
+}
 
 /* Uncomment (and remove this text!) to get bold-faced definition list terms
 dl.docutils dt {
@@ -84,7 +75,7 @@ div.tip p.admonition-title {
 
 div.attention p.admonition-title, div.caution p.admonition-title,
 div.danger p.admonition-title, div.error p.admonition-title,
-div.warning p.admonition-title {
+div.warning p.admonition-title, .code .error {
   color: red ;
   font-weight: bold ;
   font-family: sans-serif }
@@ -168,11 +159,38 @@ h2.subtitle {
 hr.docutils {
   width: 75% }
 
-img.align-left {
-  clear: left }
+img.align-left, .figure.align-left, object.align-left {
+  clear: left ;
+  float: left ;
+  margin-right: 1em }
 
-img.align-right {
-  clear: right }
+img.align-right, .figure.align-right, object.align-right {
+  clear: right ;
+  float: right ;
+  margin-left: 1em }
+
+img.align-center, .figure.align-center, object.align-center {
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.align-left {
+  text-align: left }
+
+.align-center {
+  clear: both ;
+  text-align: center }
+
+.align-right {
+  text-align: right }
+
+/* reset inner alignment in figures */
+div.align-right {
+  text-align: inherit }
+
+/* div.align-center * { */
+/*   text-align: left } */
 
 ol.simple, ul.simple {
   margin-bottom: 1em }
@@ -227,12 +245,20 @@ p.topic-title {
 pre.address {
   margin-bottom: 0 ;
   margin-top: 0 ;
-  font-family: serif ;
-  font-size: 100% }
+  font: inherit }
 
-pre.literal-block, pre.doctest-block {
+pre.literal-block, pre.doctest-block, pre.math, pre.code {
   margin-left: 2em ;
   margin-right: 2em }
+
+pre.code .ln { color: grey; } /* line numbers */
+pre.code, code { background-color: #eeeeee }
+pre.code .comment, code .comment { color: #5C6576 }
+pre.code .keyword, code .keyword { color: #3B0D06; font-weight: bold }
+pre.code .literal.string, code .literal.string { color: #0C5404 }
+pre.code .name.builtin, code .name.builtin { color: #352B84 }
+pre.code .deleted, code .deleted { background-color: #DEB0A1}
+pre.code .inserted, code .inserted { background-color: #A3D289}
 
 span.classifier {
   font-family: sans-serif ;
@@ -285,6 +311,21 @@ table.docutils th.field-name, table.docinfo th.docinfo-name {
   white-space: nowrap ;
   padding-left: 0 }
 
+/* &quot;booktabs&quot; style (no vertical lines) */
+table.docutils.booktabs {
+  border: 0px;
+  border-top: 2px solid;
+  border-bottom: 2px solid;
+  border-collapse: collapse;
+}
+table.docutils.booktabs * {
+  border: 0px;
+}
+table.docutils.booktabs th {
+  border-bottom: thin solid;
+  text-align: left;
+}
+
 h1 tt.docutils, h2 tt.docutils, h3 tt.docutils,
 h4 tt.docutils, h5 tt.docutils, h6 tt.docutils {
   font-size: 100% }
@@ -293,16 +334,26 @@ ul.auto-toc {
   list-style-type: none }
 
 </style>
+<style type="text/css">
+
+/* Effectively headings */
+th.head { font-size: 150%; }
+
+/* Bidi (mostly covered by hibidi.py adding dir=rtl/ltr)  */
+.document table { width: 100%; }
+
+/* not quoting =&quot;rtl&quot; is important so docutils won't escape them to &quot; when
+   embedding, which will not be decoded by browser unless serving as XHTML. */
+[dir=rtl] th.field-name,
+[dir=RTL] th.field-name { text-align: right !important; }
+
+</style>
 </head>
 <body dir="LTR">
 <div class="document" id="anat-beni-2009-09-03">
 <h1 class="title">Anat &amp; Beni — 2009-09-03</h1>
 
-<!-- ClickTale Top part -->
-<script type="text/javascript">
-var WRInitTime=(new Date()).getTime();
-</script>
-<!-- ClickTale end of Top part --><img alt="hazmana.jpg" class="align-center" src="hazmana.jpg" style="width: 100%;"/>
+<img alt="hazmana.jpg" class="align-center" src="hazmana.jpg" style="width: 100%;"/>
 <img alt="hazmana2.jpg" class="align-center" src="hazmana2.jpg" style="width: 100%;"/>
 <table border="1" class="borderless docutils">
 <colgroup>
@@ -452,17 +503,19 @@ var WRInitTime=(new Date()).getTime();
 <script src="https://cdn.rawgit.com/brython-dev/brython/3.2.2/www/src/brython.js" type="text/javascript">
 </script>
 <script type="text/javascript">
+  /*<![CDATA[ - helps XHTML served as HTML. */
   // OK since nobody else here sets body.onload
   document.body.onload = function() { brython({debug: 1}); };
+  /*]]>*/
 </script>
 
 <center id="huppoid_here">
    <i>Running huppa.py... If you see nothing, make sure you're using a modern browser e.g. Firefox or Chrome. IE 9+ might work too (untested). If you're wondering, no — IE 9 didn't exist back then, I've updated this later.</i>
 </center>
 <script src="huppa.py" type="text/python3">
-</script><!-- [Source will be posted soon.
-Figures shamelessly stolen from `XKCD 489`_, formal attire from `XKCD 422`_.
-Hint: XKCD scales up really well by `tracing with Inkscape`_.] -->
+</script><hr class="docutils"/>
+<p>Source: <a class="reference external" href="https://github.com/cben/huppoid">https://github.com/cben/huppoid</a>.
+Stick figures were shamelessly stolen from <a class="reference external" href="https://xkcd.com/489">https://xkcd.com/489</a>, formal attire from <a class="reference external" href="https://xkcd.com/422">https://xkcd.com/422</a>.</p>
 </div>
 </body>
 </html>
