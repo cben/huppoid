@@ -122,14 +122,14 @@ Anat & Beni — 2009-09-03
 .. _кубоид: http://ru.wikipedia.org/wiki/%D0%93%D0%B8%D0%BF%D0%B5%D1%80%D0%BA%D1%83%D0%B1
 
 .. raw:: html
-
+   
     <!-- Caveat: newline/whitespace before closing script tag is required lest
-         docutils minimize the script tag to be self-closing, which doesn't
+         hibidi.py minimize the script tag to be self-closing, which doesn't
          work unless we actually serve with an XHTML mime type. -->
     <script type="text/javascript" src="https://cdn.rawgit.com/brython-dev/brython/3.2.2/www/src/brython.js">
     </script>
     <script type="text/javascript">
-      /*<![CDATA[ - helps XHTML served as HTML. */
+      /*<![CDATA[ - possibly unneeded here but is safer polyglot markup. */
       // OK since nobody else here sets body.onload
       document.body.onload = function() { brython({debug: 1}); };
       /*]]>*/

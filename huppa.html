@@ -342,8 +342,9 @@ th.head { font-size: 150%; }
 /* Bidi (mostly covered by hibidi.py adding dir=rtl/ltr)  */
 .document table { width: 100%; }
 
-/* not quoting =&quot;rtl&quot; is important so docutils won't escape them to &quot; when
-   embedding, which will not be decoded by browser unless serving as XHTML. */
+/* not quoting =&quot;rtl&quot; is important so when embedding,
+   hibidi.py (which talks XML and not HTML5) won't escape them to &quot;,
+   which will not be decoded by browser unless serving as XHTML. */
 [dir=rtl] th.field-name,
 [dir=RTL] th.field-name { text-align: right !important; }
 
@@ -498,12 +499,12 @@ th.head { font-size: 150%; }
 </tbody>
 </table>
 <!-- Caveat: newline/whitespace before closing script tag is required lest
-     docutils minimize the script tag to be self-closing, which doesn't
+     hibidi.py minimize the script tag to be self-closing, which doesn't
      work unless we actually serve with an XHTML mime type. -->
 <script src="https://cdn.rawgit.com/brython-dev/brython/3.2.2/www/src/brython.js" type="text/javascript">
 </script>
 <script type="text/javascript">
-  /*<![CDATA[ - helps XHTML served as HTML. */
+  /*<![CDATA[ - possibly unneeded here but is safer polyglot markup. */
   // OK since nobody else here sets body.onload
   document.body.onload = function() { brython({debug: 1}); };
   /*]]>*/

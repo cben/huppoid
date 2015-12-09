@@ -4,7 +4,8 @@ th.head { font-size: 150%; }
 /* Bidi (mostly covered by hibidi.py adding dir=rtl/ltr)  */
 .document table { width: 100%; }
 
-/* not quoting ="rtl" is important so docutils won't escape them to &quot; when
-   embedding, which will not be decoded by browser unless serving as XHTML. */
+/* not quoting ="rtl" is important so when embedding,
+   hibidi.py (which talks XML and not HTML5) won't escape them to &quot;,
+   which will not be decoded by browser unless serving as XHTML. */
 [dir=rtl] th.field-name,
 [dir=RTL] th.field-name { text-align: right !important; }
